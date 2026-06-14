@@ -38,7 +38,7 @@ export default function ContactSection() {
   };
 
   const whatsappMessage = encodeURIComponent("Halo Aruna Karsa, saya tertarik untuk melakukan konsultasi mengenai proyek pembangunan/desain bangunan saya.");
-  const whatsappUrl = `https://wa.me/6287888986649?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/6285117446649?text=${whatsappMessage}`;
 
   return (
     <section className="py-24 bg-zinc-50 dark:bg-zinc-900 transition-colors">
@@ -87,7 +87,7 @@ export default function ContactSection() {
                   <Phone className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-white text-sm">Hubungi Telepon</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">+62 812-3456-789</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">6285117446649</p>
                   </div>
                 </a>
 
@@ -98,7 +98,7 @@ export default function ContactSection() {
                   <Mail className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-white text-sm">Kirim Email</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">info@arunakarsa.co.id</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">[ceo@aruna.my.id]</p>
                   </div>
                 </a>
               </div>
