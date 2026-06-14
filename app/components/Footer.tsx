@@ -26,9 +26,9 @@ export default function Footer() {
             <Image
               src="/logo/logo-horizontal.png"
               alt="Aruna Karsa Logo"
-              width={160}
-              height={40}
-              className="h-10 w-auto object-contain brightness-200 contrast-200 opacity-90 transition-transform duration-300 group-hover:scale-[1.02]"
+              width={200}
+              height={50}
+              className="h-12 w-auto object-contain brightness-200 contrast-200 opacity-90 transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </Link>
           <p className="text-sm leading-relaxed text-zinc-400">
