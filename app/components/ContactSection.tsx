@@ -76,7 +76,7 @@ export default function ContactSection() {
                   <MapPin className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-white text-sm">Alamat Kantor</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Jl. Raya Sunrise No. 45, Kebayoran Baru, Jakarta Selatan, 12130</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Jl. Bimosari 217, Tahunan, Kec. Umbulharjo Kota Yogyakarta, DI Yogyakarta, 55167</p>
                   </div>
                 </a>
 
