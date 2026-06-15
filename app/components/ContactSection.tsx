@@ -3,7 +3,11 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send, MessageSquare, ShieldAlert } from "lucide-react";
 
-export default function ContactSection() {
+interface ContactSectionProps {
+  config?: any;
+}
+
+export default function ContactSection({ config }: ContactSectionProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,6 +15,11 @@ export default function ContactSection() {
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const contactAddress = config?.contact_address || "Jl. Bimosari 217, Tahunan, Kec. Umbulharjo Kota Yogyakarta, DI Yogyakarta, 55167";
+  const contactPhone = config?.contact_phone || "+62 812-3456-789";
+  const contactEmail = config?.contact_email || "info@arunakarsa.co.id";
+  const rawWhatsApp = config?.social_links?.whatsapp || "https://wa.me/628123456789";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,8 +46,10 @@ export default function ContactSection() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const whatsappMessage = encodeURIComponent("Halo Aruna Karsa, saya tertarik untuk melakukan konsultasi mengenai proyek pembangunan/desain bangunan saya.");
-  const whatsappUrl = `https://wa.me/6285117446649?text=${whatsappMessage}`;
+  const cleanPhone = contactPhone.replace(/[^+\d]/g, "");
+  const whatsappUrl = rawWhatsApp.startsWith("http")
+    ? rawWhatsApp
+    : `https://wa.me/${rawWhatsApp.replace(/[^\d]/g, "")}`;
 
   return (
     <section className="py-24 bg-zinc-50 dark:bg-zinc-900 transition-colors">
@@ -67,38 +78,33 @@ export default function ContactSection() {
               </p>
 
               <div className="space-y-4 pt-4">
-                <a
-                  href="https://maps.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex gap-4 p-4 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-100 dark:hover:border-zinc-800 transition-all duration-300"
-                >
+                <div className="flex gap-4 p-4 rounded-2xl border border-transparent">
                   <MapPin className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-white text-sm">Alamat Kantor</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Jl. Bimosari 217, Tahunan, Kec. Umbulharjo Kota Yogyakarta, DI Yogyakarta, 55167</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{contactAddress}</p>
                   </div>
-                </a>
+                </div>
 
                 <a
-                  href="tel:+628123456789"
+                  href={`tel:${cleanPhone}`}
                   className="flex gap-4 p-4 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-100 dark:hover:border-zinc-800 transition-all duration-300"
                 >
                   <Phone className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-white text-sm">Hubungi Telepon</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">6285117446649</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{contactPhone}</p>
                   </div>
                 </a>
 
                 <a
-                  href="mailto:info@arunakarsa.co.id"
+                  href={`mailto:${contactEmail}`}
                   className="flex gap-4 p-4 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-100 dark:hover:border-zinc-800 transition-all duration-300"
                 >
                   <Mail className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-zinc-900 dark:text-white text-sm">Kirim Email</h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">[ceo@aruna.my.id]</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{contactEmail}</p>
                   </div>
                 </a>
               </div>

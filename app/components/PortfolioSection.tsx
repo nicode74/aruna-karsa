@@ -6,25 +6,39 @@ import Link from "next/link";
 import { ArrowRight, Filter, MapPin, Calendar, Ruler, CheckCircle2, RefreshCw, Layers } from "lucide-react";
 
 interface Project {
-  id: number;
+  id: any;
   title: string;
   category: "residential" | "commercial" | "interior";
-  categoryLabel: string;
+  category_label?: string;
+  categoryLabel?: string;
   location: string;
   year: string;
   area: string;
   status: "Selesai" | "Pembangunan" | "Perencanaan";
-  image: string;
+  image_url?: string;
+  image?: string;
   description: string;
   client: string;
   materials: string[];
 }
 
-export default function PortfolioSection({ isDetailed = false }) {
+interface PortfolioSectionProps {
+  isDetailed?: boolean;
+  title?: string;
+  subtitle?: string;
+  projects?: Project[];
+}
+
+export default function PortfolioSection({
+  isDetailed = false,
+  title,
+  subtitle,
+  projects: propProjects,
+}: PortfolioSectionProps) {
   const [filter, setFilter] = useState<"all" | "residential" | "commercial" | "interior">("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  const projects: Project[] = [
+  const defaultProjects: Project[] = [
     {
       id: 1,
       title: "Villa Kayu Aruna",
@@ -69,11 +83,22 @@ export default function PortfolioSection({ isDetailed = false }) {
     }
   ];
 
+  const rawProjects = propProjects || defaultProjects;
+
+  const projects = rawProjects.map(p => ({
+    ...p,
+    image: p.image_url || p.image || "/images/modern_villa.png",
+    categoryLabel: p.category_label || p.categoryLabel || "Residensial"
+  }));
+
   const filteredProjects = filter === "all"
     ? projects
     : projects.filter(p => p.category === filter);
 
-  // In landing mode, limit projects to 3. Since we have 3, we show all.
+  const sectionTitle = title || "PORTOFOLIO";
+  const sectionSubtitle = subtitle || "Karya Konstruksi & Keindahan Arsitektur Kami";
+
+  // In landing mode, limit projects to 3.
   const displayProjects = isDetailed ? filteredProjects : projects.slice(0, 3);
 
   return (
@@ -83,10 +108,10 @@ export default function PortfolioSection({ isDetailed = false }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4 max-w-2xl">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-500">
-              PORTOFOLIO
+              {sectionTitle}
             </h2>
             <p className="font-display font-extrabold text-3xl sm:text-4xl text-zinc-900 dark:text-white leading-tight">
-              Karya Konstruksi & Keindahan Arsitektur Kami
+              {sectionSubtitle}
             </p>
           </div>
           {!isDetailed && (
@@ -193,7 +218,7 @@ export default function PortfolioSection({ isDetailed = false }) {
               {/* Header Image */}
               <div className="relative aspect-video w-full bg-zinc-200">
                 <Image
-                  src={selectedProject.image}
+                  src={selectedProject.image || "/images/modern_villa.png"}
                   alt={selectedProject.title}
                   fill
                   className="object-cover"

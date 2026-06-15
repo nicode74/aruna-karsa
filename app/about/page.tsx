@@ -1,4 +1,5 @@
 import React from "react";
+import { getPageData, getServices, getProjects } from "../../lib/supabase/helpers";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import AboutSection from "../components/AboutSection";
@@ -7,28 +8,90 @@ import PortfolioSection from "../components/PortfolioSection";
 import ContactSection from "../components/ContactSection";
 import Footer from "../components/Footer";
 
-export const metadata = {
-  title: "Tentang Kami",
-  description: "Pelajari visi, misi, dan nilai-nilai fundamental Aruna Karsa dalam menghadirkan desain arsitektur berkualitas dan transparan.",
-};
+export async function generateMetadata() {
+  const { page } = await getPageData("about");
+  return {
+    title: page?.title || "Tentang Kami | Aruna Karsa",
+    description: page?.description || "Pelajari visi, misi, dan nilai-nilai fundamental Aruna Karsa dalam menghadirkan desain arsitektur berkualitas dan transparan.",
+  };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { config, page } = await getPageData("about");
+  
+  // Fetch dynamic collections
+  const services = await getServices();
+  const projects = await getProjects();
+
+  const sections = page?.sections || [
+    { id: "hero", enabled: true },
+    { id: "about", enabled: true },
+    { id: "services", enabled: true },
+    { id: "portfolio", enabled: true },
+    { id: "contact", enabled: true }
+  ];
+
   return (
     <>
-      <Header />
+      <Header config={config} />
       <main className="flex-grow">
-        <Hero />
-        
-        {/* Detailed version of About Section */}
-        <AboutSection isDetailed={true} />
-        
-        {/* Services & Portfolio previews */}
-        <ServicesSection isDetailed={false} />
-        <PortfolioSection isDetailed={false} />
-        
-        <ContactSection />
+        {sections.map((section: any) => {
+          if (!section.enabled) return null;
+
+          switch (section.id) {
+            case "hero":
+              return (
+                <Hero
+                  key={section.id}
+                  title={section.title}
+                  subtitle={section.subtitle}
+                  ctaText={section.ctaText}
+                  ctaHref={section.ctaHref}
+                  bgImage={section.bgImage}
+                />
+              );
+            case "about":
+              return (
+                <AboutSection
+                  key={section.id}
+                  isDetailed={true} // Detailed for about page
+                  title={section.title}
+                  subtitle={section.subtitle}
+                />
+              );
+            case "services":
+              return (
+                <ServicesSection
+                  key={section.id}
+                  isDetailed={false}
+                  title={section.title}
+                  subtitle={section.subtitle}
+                  services={services}
+                />
+              );
+            case "portfolio":
+              return (
+                <PortfolioSection
+                  key={section.id}
+                  isDetailed={false}
+                  title={section.title}
+                  subtitle={section.subtitle}
+                  projects={projects}
+                />
+              );
+            case "contact":
+              return (
+                <ContactSection
+                  key={section.id}
+                  config={config}
+                />
+              );
+            default:
+              return null;
+          }
+        })}
       </main>
-      <Footer />
+      <Footer config={config} />
     </>
   );
 }

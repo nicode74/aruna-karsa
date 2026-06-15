@@ -4,9 +4,35 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, Sparkles, Building, Palette } from "lucide-react";
 
-export default function Hero() {
+interface HeroProps {
+  title?: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaHref?: string;
+  bgImage?: string;
+}
+
+export default function Hero({ title, subtitle, ctaText, ctaHref, bgImage }: HeroProps) {
+  const heroTitle = title || "Dari Tekad Menjadi Hunian, Dari Harapan Menjadi Kenyataan.";
+  const heroSubtitle = subtitle || "Aruna Karsa merancang arsitektur dan membangun hunian yang melambangkan estetika, kekuatan struktur, serta keterbukaan anggaran sejak awal. Kami menghadirkan ruang hidup yang bermakna dan aman sepanjang masa.";
+  const heroCtaText = ctaText || "Konsultasi Sekarang";
+  const heroCtaHref = ctaHref || "/contact";
+
+  const sectionStyle = bgImage && !bgImage.startsWith("/images/") ? {
+    backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), url(${bgImage})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  } : undefined;
+
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-20 overflow-hidden bg-radial from-brand-slate-50 via-zinc-100 to-zinc-200 dark:from-zinc-950 dark:via-brand-slate-950 dark:to-black">
+    <section
+      style={sectionStyle}
+      className={`relative min-h-[90vh] flex items-center justify-center pt-24 pb-20 overflow-hidden ${
+        bgImage && !bgImage.startsWith("/images/")
+          ? "bg-zinc-950 text-white"
+          : "bg-radial from-brand-slate-50 via-zinc-100 to-zinc-200 dark:from-zinc-950 dark:via-brand-slate-950 dark:to-black"
+      }`}
+    >
       {/* Background Decorative Grid */}
       <div className="absolute inset-0 opacity-10 dark:opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -27,20 +53,24 @@ export default function Hero() {
             <span>Pemberi Cahaya & Awal yang Baru</span>
           </div>
 
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.1] text-zinc-900 dark:text-white max-w-2xl">
-            Dari Tekad Menjadi <span className="text-gradient">Hunian</span>, Dari Harapan Menjadi <span className="text-gradient">Kenyataan</span>.
+          <h1 className={`font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.1] max-w-2xl ${
+            bgImage && !bgImage.startsWith("/images/") ? "text-white" : "text-zinc-900 dark:text-white"
+          }`}>
+            {heroTitle}
           </h1>
 
-          <p className="text-lg text-zinc-600 dark:text-zinc-300 max-w-lg leading-relaxed font-normal">
-            Aruna Karsa merancang arsitektur dan membangun hunian yang melambangkan estetika, kekuatan struktur, serta keterbukaan anggaran sejak awal. Kami menghadirkan ruang hidup yang bermakna dan aman sepanjang masa.
+          <p className={`text-lg max-w-lg leading-relaxed font-normal ${
+            bgImage && !bgImage.startsWith("/images/") ? "text-zinc-350" : "text-zinc-600 dark:text-zinc-300"
+          }`}>
+            {heroSubtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link
-              href="/contact"
+              href={heroCtaHref}
               className="group px-8 py-4 rounded-xl bg-brand-amber-600 text-white font-bold tracking-wide shadow-lg shadow-brand-amber-600/25 hover:bg-brand-amber-500 hover:shadow-brand-amber-500/30 transition-all duration-300 flex items-center justify-center gap-2 hover:-translate-y-0.5"
             >
-              Konsultasi Sekarang
+              {heroCtaText}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link

@@ -5,9 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Send, ArrowUpRight } from "lucide-react";
 
-export default function Footer() {
+export default function Footer({ config }: { config?: any }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+
+  const logoUrl = config?.logo_url || "/logo/logo-horizontal.png";
+  const siteName = config?.site_name || "Aruna Karsa";
+  const contactAddress = config?.contact_address || "Jl. Raya Sunrise No. 45, Kebayoran Baru, Jakarta Selatan, 12130";
+  const contactPhone = config?.contact_phone || "+62 812-3456-789";
+  const contactEmail = config?.contact_email || "info@arunakarsa.co.id";
+  const footerText = config?.footer_text || "Aruna Karsa adalah tekad untuk menghadirkan awal yang baru dalam setiap ruang yang dibangun, menjadikannya bukan sekadar bangunan, tetapi rumah bagi harapan dan kehidupan.";
+  const socials = config?.social_links || { instagram: "https://instagram.com", facebook: "https://facebook.com", whatsapp: "https://wa.me/628123456789" };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,54 +32,58 @@ export default function Footer() {
         <div className="space-y-6">
           <Link href="/" className="inline-block group">
             <Image
-              src="/logo/logo-horizontal.png"
-              alt="Aruna Karsa Logo"
+              src={logoUrl}
+              alt={`${siteName} Logo`}
               width={200}
               height={50}
               className="h-12 w-auto object-contain brightness-200 contrast-200 opacity-90 transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </Link>
           <p className="text-sm leading-relaxed text-zinc-400">
-            Aruna Karsa adalah tekad untuk menghadirkan awal yang baru dalam setiap ruang yang dibangun, menjadikannya bukan sekadar bangunan, tetapi rumah bagi harapan dan kehidupan.
+            {footerText}
           </p>
           <div className="flex items-center gap-3">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-brand-amber-600 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
-              aria-label="Instagram"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-              </svg>
-            </a>
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-brand-amber-600 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
-              aria-label="Facebook"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-              </svg>
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-brand-amber-600 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
-              aria-label="LinkedIn"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                <rect width="4" height="12" x="2" y="9"/>
-                <circle cx="4" cy="4" r="2"/>
-              </svg>
-            </a>
+            {socials.instagram && (
+              <a
+                href={socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-brand-amber-600 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
+                aria-label="Instagram"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
+              </a>
+            )}
+            {socials.facebook && (
+              <a
+                href={socials.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-brand-amber-600 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
+                aria-label="Facebook"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
+            )}
+            {socials.whatsapp && (
+              <a
+                href={socials.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-brand-amber-600 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
+                aria-label="WhatsApp"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+              </a>
+            )}
           </div>
         </div>
 
@@ -111,19 +123,19 @@ export default function Footer() {
             <li className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-brand-amber-500 shrink-0 mt-0.5" />
               <span>
-                Jl. Raya Sunrise No. 45, Kebayoran Baru, Jakarta Selatan, 12130
+                {contactAddress}
               </span>
             </li>
             <li className="flex items-center gap-3">
               <Phone className="w-5 h-5 text-brand-amber-500 shrink-0" />
-              <a href="tel:+628123456789" className="hover:text-brand-amber-500">
-                +62 812-3456-789
+              <a href={`tel:${contactPhone.replace(/[^+\d]/g, "")}`} className="hover:text-brand-amber-500">
+                {contactPhone}
               </a>
             </li>
             <li className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-brand-amber-500 shrink-0" />
-              <a href="mailto:info@arunakarsa.co.id" className="hover:text-brand-amber-500">
-                info@arunakarsa.co.id
+              <a href={`mailto:${contactEmail}`} className="hover:text-brand-amber-500">
+                {contactEmail}
               </a>
             </li>
           </ul>

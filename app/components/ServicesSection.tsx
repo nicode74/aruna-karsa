@@ -4,33 +4,56 @@ import React from "react";
 import Link from "next/link";
 import { PenTool, HardHat, Sofa, FileSpreadsheet, ArrowRight } from "lucide-react";
 
-export default function ServicesSection({ isDetailed = false }) {
-  const services = [
+interface ServicesSectionProps {
+  isDetailed?: boolean;
+  title?: string;
+  subtitle?: string;
+  services?: any[];
+}
+
+const ICON_MAP: Record<string, any> = {
+  PenTool,
+  HardHat,
+  Sofa,
+  FileSpreadsheet
+};
+
+export default function ServicesSection({
+  isDetailed = false,
+  title,
+  subtitle,
+  services: propServices
+}: ServicesSectionProps) {
+  const defaultServices = [
     {
-      icon: PenTool,
+      icon_name: "PenTool",
       title: "Desain Arsitektur",
-      desc: "Layanan perancangan konsep bangunan mulai dari denah, visualisasi 3D photorealistic, hingga gambar kerja teknis (DED) dengan detail presisi.",
+      description: "Layanan perancangan konsep bangunan mulai dari denah, visualisasi 3D photorealistic, hingga gambar kerja teknis (DED) dengan detail presisi.",
       features: ["Konsep 3D Render & Denah", "Gambar Detail Teknis (DED)", "Perizinan Bangunan Gedung (PBG)"]
     },
     {
-      icon: HardHat,
+      icon_name: "HardHat",
       title: "Bangun & Kontraktor",
-      desc: "Pembangunan rumah tinggal, ruko, atau kantor secara menyeluruh dari struktur pondasi, pengerjaan arsitektural, hingga finishing dengan garansi kekuatan.",
+      description: "Pembangunan rumah tinggal, ruko, atau kantor secara menyeluruh dari struktur pondasi, pengerjaan arsitektural, hingga finishing dengan garansi kekuatan.",
       features: ["Pengawasan Proyek Ketat", "Garansi Konstruksi Pemeliharaan", "Tenaga Ahli Bersertifikat"]
     },
     {
-      icon: Sofa,
+      icon_name: "Sofa",
       title: "Desain Interior",
-      desc: "Transformasi estetika dalam ruang dengan perancangan layout, pemilihan skema warna, tata cahaya, serta custom pembuatan furnitur/cabinetry.",
+      description: "Transformasi estetika dalam ruang dengan perancangan layout, pemilihan skema warna, tata cahaya, serta custom pembuatan furnitur/cabinetry.",
       features: ["Desain Kitchen Set & Wardrobe", "Pencahayaan & Aksesori Estetis", "Optimalisasi Tata Ruang"]
     },
     {
-      icon: FileSpreadsheet,
+      icon_name: "FileSpreadsheet",
       title: "Penyusunan RAB Transparan",
-      desc: "Konsultasi perhitungan anggaran pembangunan secara rinci dan terbuka. Memastikan efisiensi biaya material tanpa mengorbankan kualitas struktur.",
+      description: "Konsultasi perhitungan anggaran pembangunan secara rinci dan terbuka. Memastikan efisiensi biaya material tanpa mengorbankan kualitas struktur.",
       features: ["Rincian Material & Upah Kerja", "Alternatif Spek Sesuai Budget", "Akurat & Dapat Dipertanggungjawabkan"]
     }
   ];
+
+  const services = propServices || defaultServices;
+  const sectionTitle = title || "LAYANAN KAMI";
+  const sectionSubtitle = subtitle || "Solusi Konstruksi & Arsitektur Terintegrasi";
 
   return (
     <section className="py-24 bg-zinc-50 dark:bg-zinc-900 transition-colors">
@@ -39,10 +62,10 @@ export default function ServicesSection({ isDetailed = false }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4 max-w-2xl">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-500">
-              LAYANAN KAMI
+              {sectionTitle}
             </h2>
             <p className="font-display font-extrabold text-3xl sm:text-4xl text-zinc-900 dark:text-white leading-tight">
-              Solusi Konstruksi & Arsitektur Terintegrasi
+              {sectionSubtitle}
             </p>
           </div>
           {!isDetailed && (
@@ -59,7 +82,7 @@ export default function ServicesSection({ isDetailed = false }) {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((srv, index) => {
-            const Icon = srv.icon;
+            const Icon = ICON_MAP[srv.icon_name] || PenTool;
             return (
               <div
                 key={index}
@@ -76,14 +99,14 @@ export default function ServicesSection({ isDetailed = false }) {
                       {srv.title}
                     </h3>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed font-normal">
-                      {srv.desc}
+                      {srv.description}
                     </p>
                   </div>
                 </div>
 
                 {isDetailed && (
                   <ul className="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-900 space-y-2">
-                    {srv.features.map((feat, idx) => (
+                    {srv.features?.map((feat: string, idx: number) => (
                       <li key={idx} className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400 font-medium">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand-amber-500" />
                         {feat}

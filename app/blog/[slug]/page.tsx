@@ -6,32 +6,50 @@ import { ArrowLeft, Calendar, Clock, User, MessageSquare } from "lucide-react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ContactSection from "../../components/ContactSection";
-import { blogPosts } from "../posts";
+import { getBlogPostBySlug, getBlogPosts, getPageData } from "../../../lib/supabase/helpers";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
+  const posts = await getBlogPosts(true); // onlyPublished = true
+  return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
+export async function generateMetadata({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
+  if (!post) return {};
+  return {
+    title: `${post.title} | Aruna Karsa`,
+    description: post.excerpt,
+  };
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
+  const { config } = await getPageData("blog");
+  
   // Find other posts for recommendation sidebar
-  const otherPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
+  const allPosts = await getBlogPosts(true);
+  const otherPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 2);
+
+  // Normalize image and read time
+  const imageUrl = post.image_url || post.image || "/images/construction_site.png";
+  const readTime = post.read_time || post.readTime || "5 Menit Baca";
 
   return (
     <>
-      <Header />
+      <Header config={config} />
       <main className="flex-grow pt-24">
         {/* Article Container */}
         <article className="max-w-4xl mx-auto px-6 py-12">
@@ -64,7 +82,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4 text-zinc-400" />
-                <span>Estimasi: {post.readTime}</span>
+                <span>Estimasi: {readTime}</span>
               </div>
             </div>
           </div>
@@ -72,7 +90,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Featured Image */}
           <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-xl mb-12 border border-zinc-200/50 dark:border-zinc-800/50">
             <Image
-              src={post.image}
+              src={imageUrl}
               alt={post.title}
               fill
               className="object-cover"
@@ -96,21 +114,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   Artikel Menarik Lainnya
                 </h3>
                 <div className="space-y-6">
-                  {otherPosts.map((rec) => (
-                    <div key={rec.slug} className="space-y-2 group">
-                      <span className="text-[10px] font-bold text-brand-amber-600 dark:text-brand-amber-500 uppercase tracking-widest">
-                        {rec.category}
-                      </span>
-                      <Link href={`/blog/${rec.slug}`} className="block">
-                        <h4 className="font-bold text-zinc-900 dark:text-white text-sm group-hover:text-brand-amber-600 dark:group-hover:text-brand-amber-500 transition-colors leading-snug">
-                          {rec.title}
-                        </h4>
-                      </Link>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
-                        {rec.excerpt}
-                      </p>
-                    </div>
-                  ))}
+                  {otherPosts.map((rec) => {
+                    const recCategory = rec.category;
+                    const recExcerpt = rec.excerpt;
+                    return (
+                      <div key={rec.slug} className="space-y-2 group">
+                        <span className="text-[10px] font-bold text-brand-amber-600 dark:text-brand-amber-500 uppercase tracking-widest">
+                          {recCategory}
+                        </span>
+                        <Link href={`/blog/${rec.slug}`} className="block">
+                          <h4 className="font-bold text-zinc-900 dark:text-white text-sm group-hover:text-brand-amber-600 dark:group-hover:text-brand-amber-500 transition-colors leading-snug">
+                            {rec.title}
+                          </h4>
+                        </Link>
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                          {recExcerpt}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -135,9 +157,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </article>
 
         {/* Contact form at the bottom */}
-        <ContactSection />
+        <ContactSection config={config} />
       </main>
-      <Footer />
+      <Footer config={config} />
     </>
   );
 }

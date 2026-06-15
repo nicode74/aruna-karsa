@@ -4,10 +4,30 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Compass, Eye, ShieldCheck, Heart, Award } from "lucide-react";
 
-export default function AboutSection({ isDetailed = false }) {
+interface AboutSectionProps {
+  isDetailed?: boolean;
+  title?: string;
+  subtitle?: string;
+  body?: string;
+  visi?: string;
+  misi?: string[];
+  filosofi_aruna?: string;
+  filosofi_karsa?: string;
+}
+
+export default function AboutSection({
+  isDetailed = false,
+  title,
+  subtitle,
+  body,
+  visi,
+  misi,
+  filosofi_aruna,
+  filosofi_karsa,
+}: AboutSectionProps) {
   const [activeTab, setActiveTab] = useState<"visi" | "misi" | "filosofi">("visi");
 
-  const missions = [
+  const defaultMissions = [
     "Menghadirkan layanan desain arsitektur dan konstruksi yang mengutamakan keseimbangan antara fungsi, estetika, dan ketahanan bangunan.",
     "Menyusun Rencana Anggaran Biaya (RAB) secara transparan, akurat, dan dapat dipertanggungjawabkan sebagai dasar kepercayaan.",
     "Memberikan pendampingan menyeluruh dalam proses pembangunan, mulai dari perencanaan, pelaksanaan, hingga penyelesaian proyek.",
@@ -15,16 +35,23 @@ export default function AboutSection({ isDetailed = false }) {
     "Membangun hubungan jangka panjang dengan klien melalui pelayanan yang jujur, komunikatif, dan berorientasi pada kepuasan."
   ];
 
+  const sectionTitle = title || "TENTANG KAMI";
+  const sectionSubtitle = subtitle || "Membangun Lebih dari Sekadar Struktur, Kami Mewujudkan Ruang Kehidupan";
+  const sectionVisi = visi || "Menjadi perusahaan konstruksi dan arsitektur yang tidak hanya membangun bangunan, tetapi menghadirkan ruang kehidupan yang bermakna, berkelanjutan, dan penuh harapan, melalui perpaduan antara estetika, kekuatan struktur, dan transparansi dalam setiap proses pembangunan.";
+  const sectionMisi = misi || defaultMissions;
+  const sectionAruna = filosofi_aruna || "Bintang yang membawa cahaya, harapan, dan kemungkinan baru di setiap awal hari.";
+  const sectionKarsa = filosofi_karsa || "Kehendak bebas, tekad bulat, dan niat kuat untuk mewujudkan karya bernilai tinggi.";
+
   return (
     <section className="py-24 bg-white dark:bg-zinc-950 transition-colors">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-xs font-bold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-500">
-            TENTANG KAMI
+            {sectionTitle}
           </h2>
           <p className="font-display font-extrabold text-3xl sm:text-4xl text-zinc-900 dark:text-white leading-tight">
-            Membangun Lebih dari Sekadar Struktur, Kami Mewujudkan Ruang Kehidupan
+            {sectionSubtitle}
           </p>
           <div className="w-16 h-1 bg-brand-amber-500 mx-auto rounded-full mt-4" />
         </div>
@@ -84,7 +111,7 @@ export default function AboutSection({ isDetailed = false }) {
                     <div>
                       <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Visi Kami</h3>
                       <p className="text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                        Menjadi perusahaan konstruksi dan arsitektur yang tidak hanya membangun bangunan, tetapi menghadirkan ruang kehidupan yang bermakna, berkelanjutan, dan penuh harapan, melalui perpaduan antara estetika, kekuatan struktur, dan transparansi dalam setiap proses pembangunan.
+                        {sectionVisi}
                       </p>
                     </div>
                   </div>
@@ -101,7 +128,7 @@ export default function AboutSection({ isDetailed = false }) {
                     Misi Kami
                   </h3>
                   <ul className="space-y-3">
-                    {missions.map((mission, index) => (
+                    {sectionMisi.map((mission, index) => (
                       <li key={index} className="flex gap-3 items-start">
                         <span className="w-5 h-5 rounded-full bg-brand-amber-100 dark:bg-brand-amber-950 text-brand-amber-600 dark:text-brand-amber-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                           {index + 1}
@@ -129,11 +156,11 @@ export default function AboutSection({ isDetailed = false }) {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
                           <span className="font-bold text-brand-amber-600 dark:text-brand-amber-500">Aruna</span>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Bintang yang membawa cahaya, harapan, dan kemungkinan baru di setiap awal hari.</p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{sectionAruna}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
                           <span className="font-bold text-brand-amber-600 dark:text-brand-amber-500">Karsa</span>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Kehendak bebas, tekad bulat, dan niat kuat untuk mewujudkan karya bernilai tinggi.</p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{sectionKarsa}</p>
                         </div>
                       </div>
                     </div>

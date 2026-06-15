@@ -6,11 +6,14 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Sun, Moon, Menu, X } from "lucide-react";
 
-export default function Header() {
+export default function Header({ config }: { config?: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+
+  const logoUrl = config?.logo_url || "/logo/logo-horizontal.png";
+  const siteName = config?.site_name || "Aruna Karsa";
 
   useEffect(() => {
     // Check initial theme from document class asynchronously to avoid hydration/render conflicts
@@ -64,8 +67,8 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center group">
           <Image
-            src="/logo/logo-horizontal.png"
-            alt="Aruna Karsa Logo"
+            src={logoUrl}
+            alt={`${siteName} Logo`}
             width={200}
             height={50}
             className="h-12 w-auto object-contain dark:brightness-200 dark:contrast-200 transition-transform duration-300 group-hover:scale-[1.02]"

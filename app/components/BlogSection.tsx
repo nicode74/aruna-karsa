@@ -5,27 +5,44 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search, Calendar, Clock, ArrowRight, User } from "lucide-react";
 
-import { blogPosts } from "../blog/posts";
+import { blogPosts as defaultBlogPosts } from "../blog/posts";
 
 export interface Post {
   slug: string;
   title: string;
   category: string;
   date: string;
-  readTime: string;
+  readTime?: string;
+  read_time?: string;
   excerpt: string;
-  image: string;
+  image?: string;
+  image_url?: string;
   author: string;
 }
 
-export default function BlogSection({ isDetailed = false }) {
+interface BlogSectionProps {
+  isDetailed?: boolean;
+  title?: string;
+  subtitle?: string;
+  posts?: Post[];
+}
+
+export default function BlogSection({
+  isDetailed = false,
+  title,
+  subtitle,
+  posts: propPosts
+}: BlogSectionProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const posts = blogPosts;
+  const posts = ((propPosts || defaultBlogPosts) as any[]).map((post) => ({
+    ...post,
+    image: post.image_url || post.image || "/images/construction_site.png",
+    readTime: post.read_time || post.readTime || "5 Menit Baca"
+  }));
 
   const categories = ["all", "Tips Budget", "Konstruksi", "Arsitektur"];
-
 
   const filteredPosts = posts.filter((post) => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -35,6 +52,8 @@ export default function BlogSection({ isDetailed = false }) {
   });
 
   const displayPosts = isDetailed ? filteredPosts : posts.slice(0, 3);
+  const sectionTitle = title || "BLOG & ARTIKEL";
+  const sectionSubtitle = subtitle || "Inspirasi Desain & Wawasan Konstruksi";
 
   return (
     <section className="py-24 bg-white dark:bg-zinc-950 transition-colors">
@@ -43,10 +62,10 @@ export default function BlogSection({ isDetailed = false }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4 max-w-2xl">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-500">
-              BLOG & ARTIKEL
+              {sectionTitle}
             </h2>
             <p className="font-display font-extrabold text-3xl sm:text-4xl text-zinc-900 dark:text-white leading-tight">
-              Inspirasi Desain & Wawasan Konstruksi
+              {sectionSubtitle}
             </p>
           </div>
           {!isDetailed && (
