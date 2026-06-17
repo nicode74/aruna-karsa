@@ -145,3 +145,72 @@ export async function uploadImage(formData: FormData) {
     return { error: err.message || "Upload failed" };
   }
 }
+
+// Helper: fire Discord notification (non-blocking, best-effort)
+async function sendDiscordNotification(type: string, data: Record<string, any>) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    await fetch(`${baseUrl}/api/notify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, data }),
+    });
+  } catch {
+    // Silently fail — notification is best-effort
+  }
+}
+
+// Contact Form Submission
+export async function submitContactForm(data: {
+  name: string;
+  email: string;
+  projectType: string;
+  message: string;
+}) {
+  const supabase = await createClient();
+
+  // Save to Supabase
+  const { error } = await supabase.from("contact_submissions").insert({
+    name: data.name,
+    email: data.email,
+    subject: data.projectType,
+    message: data.message,
+  });
+
+  if (error) {
+    console.error("Failed to save contact submission:", error.message);
+    // Don't block — still try to notify
+  }
+
+  // Send Discord notification
+  await sendDiscordNotification("contact", data);
+
+  return { success: true };
+}
+
+// Review Submission
+export async function submitReview(data: {
+  name: string;
+  rating: number;
+  message: string;
+}) {
+  const supabase = await createClient();
+
+  // Save to Supabase
+  const { error } = await supabase.from("reviews").insert({
+    name: data.name,
+    rating: data.rating,
+    message: data.message,
+    is_published: false, // requires admin approval
+  });
+
+  if (error) {
+    console.error("Failed to save review:", error.message);
+  }
+
+  // Send Discord notification
+  await sendDiscordNotification("review", data);
+
+  return { success: true };
+}
+

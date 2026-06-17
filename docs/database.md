@@ -66,10 +66,19 @@ create table public.portfolio (
     year text not null,
     area text not null,
     status text not null check (status in ('Selesai', 'Pembangunan', 'Perencanaan')),
-    image_url text not null,
+    image_url text,                                      -- legacy cover image (kept for compatibility)
+    image_urls text[] not null default '{}'::text[],    -- primary: list of Discord CDN URLs
     description text not null,
     client text not null,
     materials text[] not null default '{}'::text[],
+    tags text[] not null default '{}'::text[],
+    price text,                                          -- optional, e.g. "Rp 2,5 Miliar"
+    challenges text,
+    solutions text,
+    timeline text,                                       -- e.g. "8 bulan"
+    design text,                                         -- design concept/style label
+    team_members text[] not null default '{}'::text[],
+    insights text,
     created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 ```
@@ -88,6 +97,33 @@ create table public.blog_posts (
     date text not null,
     read_time text not null,
     image_url text not null,
+    is_published boolean not null default false,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+```
+
+### F. Contact Form Submissions (`contact_submissions`)
+
+```sql
+create table public.contact_submissions (
+    id uuid default gen_random_uuid() primary key,
+    name text not null,
+    email text not null,
+    phone text,
+    subject text,
+    message text not null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+```
+
+### G. Reviews (`reviews`)
+
+```sql
+create table public.reviews (
+    id uuid default gen_random_uuid() primary key,
+    name text not null,
+    rating integer not null check (rating between 1 and 5),
+    message text not null,
     is_published boolean not null default false,
     created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -151,6 +187,28 @@ on public.blog_posts for select using (true);
 
 create policy "Allow admin write/update to blog_posts" 
 on public.blog_posts for all using (auth.role() = 'authenticated');
+
+---------------------------------------------------
+-- contact_submissions Policies
+---------------------------------------------------
+create policy "Allow public insert to contact_submissions"
+on public.contact_submissions for insert with check (true);
+
+create policy "Allow admin read contact_submissions"
+on public.contact_submissions for select using (auth.role() = 'authenticated');
+
+---------------------------------------------------
+-- reviews Policies
+---------------------------------------------------
+create policy "Allow public insert to reviews"
+on public.reviews for insert with check (true);
+
+create policy "Allow admin read/update reviews"
+on public.reviews for all using (auth.role() = 'authenticated');
+
+-- Enable RLS on new tables
+alter table public.contact_submissions enable row level security;
+alter table public.reviews enable row level security;
 ```
 
 ---
@@ -178,4 +236,67 @@ on storage.objects for all using (
     bucket_id = 'aruna-assets' 
     and auth.role() = 'authenticated'
 );
+```
+
+---
+
+## 4. Migration — Update 1.0 (for existing databases)
+
+If your database was already initialized before Update 1.0, run the following in the **Supabase SQL Editor** to add the new columns and tables without losing existing data.
+
+```sql
+-- Portfolio: add new columns
+ALTER TABLE public.portfolio
+  ADD COLUMN IF NOT EXISTS image_urls  text[]  NOT NULL DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS tags        text[]  NOT NULL DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS price       text,
+  ADD COLUMN IF NOT EXISTS challenges  text,
+  ADD COLUMN IF NOT EXISTS solutions   text,
+  ADD COLUMN IF NOT EXISTS timeline    text,
+  ADD COLUMN IF NOT EXISTS design      text,
+  ADD COLUMN IF NOT EXISTS team_members text[] NOT NULL DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS insights    text;
+
+-- Make legacy image_url nullable (images now stored in image_urls[])
+ALTER TABLE public.portfolio
+  ALTER COLUMN image_url DROP NOT NULL;
+
+-- Create contact_submissions table
+CREATE TABLE IF NOT EXISTS public.contact_submissions (
+    id         uuid default gen_random_uuid() primary key,
+    name       text not null,
+    email      text not null,
+    phone      text,
+    subject    text,
+    message    text not null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Create reviews table
+CREATE TABLE IF NOT EXISTS public.reviews (
+    id           uuid default gen_random_uuid() primary key,
+    name         text not null,
+    rating       integer not null check (rating between 1 and 5),
+    message      text not null,
+    is_published boolean not null default false,
+    created_at   timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Enable RLS on new tables
+ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+
+-- Policies for contact_submissions
+CREATE POLICY "Allow public insert to contact_submissions"
+  ON public.contact_submissions FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow admin read contact_submissions"
+  ON public.contact_submissions FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Policies for reviews
+CREATE POLICY "Allow public insert to reviews"
+  ON public.reviews FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow admin read/update reviews"
+  ON public.reviews FOR ALL USING (auth.role() = 'authenticated');
 ```

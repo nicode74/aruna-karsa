@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { updateSiteConfig, triggerSeed, uploadImage } from "../actions/dbActions";
 import {
   Settings,
@@ -16,19 +17,17 @@ import {
   Upload,
   Loader2,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  ChevronDown,
+  ExternalLink,
+  ArrowRight,
+  Globe,
+  Shield,
+  Sparkles,
 } from "lucide-react";
 
 const Instagram = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
     <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
@@ -36,19 +35,10 @@ const Instagram = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Facebook = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
   </svg>
 );
-
 
 interface SettingsFormProps {
   initialConfig: any;
@@ -59,16 +49,92 @@ interface SettingsFormProps {
   };
 }
 
+function Section({
+  title,
+  icon: Icon,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  icon: React.ElementType;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl overflow-hidden shadow-sm transition-colors">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-8 py-5 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors"
+      >
+        <div className="flex items-center gap-3 text-zinc-900 dark:text-white">
+          <div className="w-8 h-8 rounded-xl bg-brand-amber-500/10 flex items-center justify-center">
+            <Icon className="w-4 h-4 text-brand-amber-500" />
+          </div>
+          <span className="font-display font-bold text-base">{title}</span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="px-8 pb-8 pt-2 border-t border-zinc-100 dark:border-zinc-800/50 space-y-6">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function InputField({
+  label,
+  icon: Icon,
+  type = "text",
+  name,
+  value,
+  onChange,
+  placeholder,
+  required,
+}: {
+  label: string;
+  icon?: React.ElementType;
+  type?: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{label}</label>
+      <div className={Icon ? "relative" : ""}>
+        {Icon && <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />}
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          className={`w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm ${Icon ? "pl-11 pr-4" : "px-4"} py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500 transition-colors`}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsForm({ initialConfig, stats }: SettingsFormProps) {
-  const [config, setConfig] = useState(initialConfig || {
-    site_name: "Aruna Karsa",
-    logo_url: "/logo/logo-horizontal.png",
-    contact_email: "info@arunakarsa.co.id",
-    contact_phone: "+62 812-3456-789",
-    contact_address: "Jl. Raya Sunrise No. 45, Kebayoran Baru, Jakarta Selatan, 12130",
-    social_links: { instagram: "", facebook: "", whatsapp: "" },
-    footer_text: ""
-  });
+  const [config, setConfig] = useState(
+    initialConfig || {
+      site_name: "Aruna Karsa",
+      logo_url: "/logo/logo-horizontal.png",
+      contact_email: "info@arunakarsa.co.id",
+      contact_phone: "+62 812-3456-789",
+      contact_address: "Jl. Raya Sunrise No. 45, Kebayoran Baru, Jakarta Selatan, 12130",
+      social_links: { instagram: "", facebook: "", whatsapp: "" },
+      footer_text: "",
+    }
+  );
 
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
@@ -82,28 +148,18 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
 
   const handleSocialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setConfig((prev: any) => ({
-      ...prev,
-      social_links: {
-        ...prev.social_links,
-        [name]: value
-      }
-    }));
+    setConfig((prev: any) => ({ ...prev, social_links: { ...prev.social_links, [name]: value } }));
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setUploading(true);
     setMessage(null);
-
     const formData = new FormData();
     formData.append("file", file);
-
     const res = await uploadImage(formData);
     setUploading(false);
-
     if (res.error) {
       setMessage({ type: "error", text: `Gagal mengunggah logo: ${res.error}` });
     } else if (res.url) {
@@ -116,10 +172,8 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
     e.preventDefault();
     setSaving(true);
     setMessage(null);
-
     const res = await updateSiteConfig(config);
     setSaving(false);
-
     if (res.error) {
       setMessage({ type: "error", text: `Gagal memperbarui pengaturan: ${res.error}` });
     } else {
@@ -131,10 +185,8 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
     if (!confirm("Apakah Anda yakin ingin memuat data bawaan? Proses ini akan mengisi tabel yang kosong dengan data default.")) return;
     setSeeding(true);
     setMessage(null);
-
     const res = await triggerSeed();
     setSeeding(false);
-
     if (res.error) {
       setMessage({ type: "error", text: `Gagal memuat data bawaan: ${res.error}` });
     } else {
@@ -143,30 +195,40 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
     }
   };
 
+  const quickLinks = [
+    { label: "Kelola Portofolio", href: "/admin/portfolio", icon: FolderKanban, count: stats.projects, color: "text-blue-500 bg-blue-500/10" },
+    { label: "Kelola Layanan", href: "/admin/services", icon: Briefcase, count: stats.services, color: "text-amber-500 bg-amber-500/10" },
+    { label: "Kelola Blog", href: "/admin/blog", icon: FileText, count: stats.blogs, color: "text-green-500 bg-green-500/10" },
+  ];
+
   return (
-    <div className="space-y-8 max-w-5xl">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-display font-extrabold text-3xl text-zinc-900 dark:text-white">
-            Pengaturan Utama
-          </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Kelola statistik ringkas, identitas logo, dan data kontak global
-          </p>
+    <form onSubmit={handleSave} className="space-y-6 max-w-5xl">
+      {/* Welcome Banner */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-800 dark:from-zinc-800 dark:to-zinc-950 rounded-3xl p-8 text-white shadow-xl">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-amber-500 rounded-full translate-x-20 -translate-y-20 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand-amber-400 rounded-full -translate-x-10 translate-y-10 blur-2xl" />
         </div>
-        <button
-          onClick={handleSeed}
-          disabled={seeding}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 disabled:pointer-events-none"
-        >
-          {seeding ? (
-            <Loader2 className="w-4 h-4 animate-spin text-brand-amber-500" />
-          ) : (
-            <Database className="w-4 h-4 text-brand-amber-500" />
-          )}
-          Muat Data Bawaan (Seed)
-        </button>
+        <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-brand-amber-400 text-xs font-bold uppercase tracking-widest mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              Aruna Karsa Admin
+            </div>
+            <h1 className="font-display font-extrabold text-3xl">Selamat Datang 👋</h1>
+            <p className="text-sm text-zinc-400">Kelola konten, proyek, dan pengaturan website Anda dari sini.</p>
+          </div>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 text-sm font-bold transition-colors shrink-0"
+          >
+            <Globe className="w-4 h-4" />
+            Lihat Website
+            <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+          </a>
+        </div>
       </div>
 
       {/* Alert Messages */}
@@ -178,66 +240,47 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
               : "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-400"
           }`}
         >
-          {message.type === "success" ? (
-            <CheckCircle className="w-5 h-5 shrink-0" />
-          ) : (
-            <AlertCircle className="w-5 h-5 shrink-0" />
-          )}
+          {message.type === "success" ? <CheckCircle className="w-5 h-5 shrink-0" /> : <AlertCircle className="w-5 h-5 shrink-0" />}
           <span>{message.text}</span>
         </div>
       )}
 
-      {/* Stats Quick Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        {[
-          { label: "Layanan Aktif", count: stats.services, icon: Briefcase, color: "text-brand-amber-500 bg-brand-amber-500/10" },
-          { label: "Proyek Portofolio", count: stats.projects, icon: FolderKanban, color: "text-blue-500 bg-blue-500/10" },
-          { label: "Artikel Blog", count: stats.blogs, icon: FileText, color: "text-green-500 bg-green-500/10" }
-        ].map((stat, idx) => {
-          const Icon = stat.icon;
+      {/* Stat Cards + Quick Links */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {quickLinks.map((item) => {
+          const Icon = item.icon;
           return (
-            <div key={idx} className="p-6 bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl flex items-center gap-4 shadow-sm transition-colors">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.color}`}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group p-6 bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl flex items-center gap-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${item.color}`}>
                 <Icon className="w-6 h-6" />
               </div>
-              <div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-wider">{stat.label}</p>
-                <p className="text-2xl font-extrabold text-zinc-900 dark:text-white mt-1">{stat.count}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-wider truncate">{item.label.replace("Kelola ", "")}</p>
+                <p className="text-2xl font-extrabold text-zinc-900 dark:text-white mt-0.5">{item.count}</p>
               </div>
-            </div>
+              <ArrowRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors shrink-0" />
+            </Link>
           );
         })}
       </div>
 
-      {/* Settings Form */}
-      <form onSubmit={handleSave} className="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 shadow-sm space-y-8 transition-colors">
-        <div className="flex items-center gap-2 pb-4 border-b border-zinc-200/50 dark:border-zinc-800/50 text-zinc-900 dark:text-white">
-          <Settings className="w-5 h-5 text-brand-amber-500" />
-          <h2 className="font-display font-extrabold text-lg">Identitas & Kontak Situs</h2>
-        </div>
-
+      {/* Collapsible Settings Sections */}
+      <Section title="Identitas & Logo Situs" icon={Globe} defaultOpen={true}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Site Name */}
+          <InputField
+            label="Nama Perusahaan / Situs"
+            name="site_name"
+            value={config.site_name}
+            onChange={handleTextChange}
+            required
+          />
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Nama Perusahaan / Situs
-            </label>
-            <input
-              type="text"
-              name="site_name"
-              value={config.site_name}
-              onChange={handleTextChange}
-              required
-              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-            />
-          </div>
-
-          {/* Logo Upload */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Logo Perusahaan
-            </label>
-            <div className="flex items-center gap-4">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Logo Perusahaan</label>
+            <div className="flex items-center gap-3">
               <input
                 type="text"
                 name="logo_url"
@@ -246,133 +289,13 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
                 placeholder="/logo/logo-horizontal.png"
                 className="flex-1 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
               />
-              <label className="cursor-pointer inline-flex items-center justify-center p-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-850 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-800">
-                {uploading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Upload className="w-5 h-5" />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  disabled={uploading}
-                />
+              <label className="cursor-pointer inline-flex items-center justify-center p-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-800">
+                {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
               </label>
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Email Hubungi Kami
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400">
-                <Mail className="w-4 h-4" />
-              </div>
-              <input
-                type="email"
-                name="contact_email"
-                value={config.contact_email}
-                onChange={handleTextChange}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-              />
-            </div>
-          </div>
-
-          {/* Phone */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Nomor Telepon / WhatsApp
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400">
-                <Phone className="w-4 h-4" />
-              </div>
-              <input
-                type="text"
-                name="contact_phone"
-                value={config.contact_phone}
-                onChange={handleTextChange}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-              />
             </div>
           </div>
         </div>
-
-        {/* Address */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Alamat Kantor / Fisik
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 pt-3.5 flex items-start pointer-events-none text-zinc-400">
-              <MapPin className="w-4 h-4" />
-            </div>
-            <textarea
-              name="contact_address"
-              value={config.contact_address}
-              onChange={handleTextChange}
-              rows={2}
-              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-            />
-          </div>
-        </div>
-
-        {/* Social Links */}
-        <div className="space-y-4">
-          <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 block border-b border-zinc-100 dark:border-zinc-800/80 pb-2">
-            Tautan Media Sosial
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
-                <Instagram className="w-3.5 h-3.5 text-zinc-400" />
-                Instagram URL
-              </label>
-              <input
-                type="text"
-                name="instagram"
-                value={config.social_links?.instagram || ""}
-                onChange={handleSocialChange}
-                placeholder="https://instagram.com/arunakarsa"
-                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
-                <Facebook className="w-3.5 h-3.5 text-zinc-400" />
-                Facebook URL
-              </label>
-              <input
-                type="text"
-                name="facebook"
-                value={config.social_links?.facebook || ""}
-                onChange={handleSocialChange}
-                placeholder="https://facebook.com/arunakarsa"
-                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
-                <MessageCircle className="w-3.5 h-3.5 text-zinc-400" />
-                WhatsApp URL
-              </label>
-              <input
-                type="text"
-                name="whatsapp"
-                value={config.social_links?.whatsapp || ""}
-                onChange={handleSocialChange}
-                placeholder="https://wa.me/628123456789"
-                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Text */}
         <div className="space-y-1.5">
           <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Teks Footer (Deskripsi Singkat Perusahaan)
@@ -385,23 +308,84 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
             className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
           />
         </div>
+      </Section>
 
-        {/* Save Button */}
-        <div className="pt-4 flex justify-end">
-          <button
-            type="submit"
-            disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-900 hover:bg-brand-amber-600 dark:bg-zinc-100 dark:hover:bg-brand-amber-500 dark:text-zinc-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {saving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            Simpan Perubahan
-          </button>
+      <Section title="Informasi Kontak" icon={Mail} defaultOpen={true}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Email Hubungi Kami" icon={Mail} type="email" name="contact_email"
+            value={config.contact_email} onChange={handleTextChange} />
+          <InputField label="Nomor Telepon / WhatsApp" icon={Phone} name="contact_phone"
+            value={config.contact_phone} onChange={handleTextChange} />
         </div>
-      </form>
-    </div>
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Alamat Kantor</label>
+          <div className="relative">
+            <MapPin className="absolute left-4 top-3.5 w-4 h-4 text-zinc-400 pointer-events-none" />
+            <textarea name="contact_address" value={config.contact_address} onChange={handleTextChange} rows={2}
+              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+            />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Media Sosial" icon={MessageCircle} defaultOpen={false}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
+              <Instagram className="w-3.5 h-3.5 text-zinc-400" /> Instagram URL
+            </label>
+            <input type="text" name="instagram" value={config.social_links?.instagram || ""} onChange={handleSocialChange}
+              placeholder="https://instagram.com/arunakarsa"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
+              <Facebook className="w-3.5 h-3.5 text-zinc-400" /> Facebook URL
+            </label>
+            <input type="text" name="facebook" value={config.social_links?.facebook || ""} onChange={handleSocialChange}
+              placeholder="https://facebook.com/arunakarsa"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
+              <MessageCircle className="w-3.5 h-3.5 text-zinc-400" /> WhatsApp URL
+            </label>
+            <input type="text" name="whatsapp" value={config.social_links?.whatsapp || ""} onChange={handleSocialChange}
+              placeholder="https://wa.me/628123456789"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+            />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Zona Bahaya" icon={Shield} defaultOpen={false}>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          Muat ulang data bawaan default ke tabel yang kosong. Tidak akan menimpa data yang sudah ada.
+        </p>
+        <button
+          type="button"
+          onClick={handleSeed}
+          disabled={seeding}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 disabled:pointer-events-none"
+        >
+          {seeding ? <Loader2 className="w-4 h-4 animate-spin text-brand-amber-500" /> : <Database className="w-4 h-4 text-brand-amber-500" />}
+          Muat Data Bawaan (Seed)
+        </button>
+      </Section>
+
+      {/* Sticky Save Bar */}
+      <div className="sticky bottom-6 flex justify-end">
+        <button
+          type="submit"
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-8 py-3.5 bg-zinc-900 hover:bg-brand-amber-600 dark:bg-zinc-100 dark:hover:bg-brand-amber-500 dark:text-zinc-900 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-xl shadow-zinc-900/20 dark:shadow-black/30 hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none"
+        >
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          Simpan Semua Perubahan
+        </button>
+      </div>
+    </form>
   );
 }

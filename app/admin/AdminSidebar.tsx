@@ -15,7 +15,8 @@ import {
   Moon,
   Menu,
   X,
-  Compass
+  Compass,
+  ExternalLink,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -108,10 +109,10 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold tracking-wide transition-all border-l-2 ${
                     isActive
-                      ? "bg-brand-amber-500 text-white shadow-md shadow-brand-amber-500/20"
-                      : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-white"
+                      ? "bg-brand-amber-500/10 dark:bg-brand-amber-500/10 border-brand-amber-500 text-brand-amber-600 dark:text-brand-amber-400"
+                      : "border-transparent text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-white"
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -120,6 +121,17 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
               );
             })}
           </nav>
+
+          {/* View Site Link */}
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold tracking-wide text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all border-l-2 border-transparent"
+          >
+            <ExternalLink className="w-4 h-4 shrink-0" />
+            Lihat Website
+          </a>
         </div>
 
         {/* Footer Panel */}

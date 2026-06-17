@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send, MessageSquare, ShieldAlert } from "lucide-react";
+import { submitContactForm } from "../actions/dbActions";
 
 interface ContactSectionProps {
   config?: any;
@@ -21,7 +22,7 @@ export default function ContactSection({ config }: ContactSectionProps) {
   const contactEmail = config?.contact_email || "info@arunakarsa.co.id";
   const rawWhatsApp = config?.social_links?.whatsapp || "https://wa.me/628123456789";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       setStatus("error");
@@ -29,17 +30,14 @@ export default function ContactSection({ config }: ContactSectionProps) {
     }
 
     setStatus("loading");
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await submitContactForm(formData);
       setStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        projectType: "desain",
-        message: "",
-      });
-      setTimeout(() => setStatus("idle"), 5000);
-    }, 1500);
+      setFormData({ name: "", email: "", projectType: "desain", message: "" });
+      setTimeout(() => setStatus("idle"), 6000);
+    } catch {
+      setStatus("error");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
