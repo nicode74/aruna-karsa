@@ -24,6 +24,10 @@ import {
   Globe,
   Shield,
   Sparkles,
+  Star,
+  Send,
+  Users,
+  TrendingUp,
 } from "lucide-react";
 
 const Instagram = (props: React.SVGProps<SVGSVGElement>) => (
@@ -46,6 +50,9 @@ interface SettingsFormProps {
     services: number;
     projects: number;
     blogs: number;
+    contacts: number;
+    reviews: number;
+    reviewsPublished: number;
   };
 }
 
@@ -123,6 +130,69 @@ function InputField({
   );
 }
 
+/** A stat card that links to a management page */
+function LinkStatCard({
+  label,
+  count,
+  href,
+  icon: Icon,
+  colorClass,
+}: {
+  label: string;
+  count: number;
+  href: string;
+  icon: React.ElementType;
+  colorClass: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group relative overflow-hidden p-6 bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl flex items-center gap-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
+    >
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${colorClass}`}>
+        <Icon className="w-6 h-6" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-wider truncate">{label}</p>
+        <p className="text-3xl font-extrabold text-zinc-900 dark:text-white mt-0.5 tabular-nums">{count}</p>
+      </div>
+      <ArrowRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors shrink-0" />
+    </Link>
+  );
+}
+
+/** A stat card that is info-only (no link) */
+function InfoStatCard({
+  label,
+  count,
+  icon: Icon,
+  colorClass,
+  badge,
+}: {
+  label: string;
+  count: number;
+  icon: React.ElementType;
+  colorClass: string;
+  badge?: string;
+}) {
+  return (
+    <div className="relative overflow-hidden p-6 bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl flex items-center gap-4 shadow-sm transition-colors">
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${colorClass}`}>
+        <Icon className="w-6 h-6" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-wider truncate">{label}</p>
+        <p className="text-3xl font-extrabold text-zinc-900 dark:text-white mt-0.5 tabular-nums">{count}</p>
+      </div>
+      {badge && (
+        <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+          {badge}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function SettingsForm({ initialConfig, stats }: SettingsFormProps) {
   const [config, setConfig] = useState(
     initialConfig || {
@@ -195,28 +265,25 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
     }
   };
 
-  const quickLinks = [
-    { label: "Kelola Portofolio", href: "/admin/portfolio", icon: FolderKanban, count: stats.projects, color: "text-blue-500 bg-blue-500/10" },
-    { label: "Kelola Layanan", href: "/admin/services", icon: Briefcase, count: stats.services, color: "text-amber-500 bg-amber-500/10" },
-    { label: "Kelola Blog", href: "/admin/blog", icon: FileText, count: stats.blogs, color: "text-green-500 bg-green-500/10" },
-  ];
-
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-5xl">
-      {/* Welcome Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-800 dark:from-zinc-800 dark:to-zinc-950 rounded-3xl p-8 text-white shadow-xl">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-amber-500 rounded-full translate-x-20 -translate-y-20 blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand-amber-400 rounded-full -translate-x-10 translate-y-10 blur-2xl" />
+
+      {/* ── Welcome Banner ─────────────────────────────────── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 dark:from-zinc-800 dark:via-zinc-900 dark:to-zinc-950 rounded-3xl p-8 text-white shadow-2xl">
+        {/* decorative orbs */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-12 -right-12 w-56 h-56 bg-brand-amber-500/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-brand-amber-400/10 rounded-full blur-2xl" />
+          <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-brand-sage-500/10 rounded-full blur-2xl" />
         </div>
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-brand-amber-400 text-xs font-bold uppercase tracking-widest mb-2">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-brand-amber-400 text-xs font-bold uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5" />
               Aruna Karsa Admin
             </div>
-            <h1 className="font-display font-extrabold text-3xl">Selamat Datang 👋</h1>
-            <p className="text-sm text-zinc-400">Kelola konten, proyek, dan pengaturan website Anda dari sini.</p>
+            <h1 className="font-display font-extrabold text-3xl lg:text-4xl">Selamat Datang 👋</h1>
+            <p className="text-sm text-zinc-400 max-w-md">Kelola konten, proyek, dan pengaturan website Anda dari sini.</p>
           </div>
           <a
             href="/"
@@ -231,7 +298,7 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
         </div>
       </div>
 
-      {/* Alert Messages */}
+      {/* ── Alert Messages ─────────────────────────────────── */}
       {message && (
         <div
           className={`p-4 rounded-2xl flex items-start gap-3 border text-sm font-semibold ${
@@ -245,30 +312,63 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
         </div>
       )}
 
-      {/* Stat Cards + Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {quickLinks.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group p-6 bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl flex items-center gap-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-            >
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${item.color}`}>
-                <Icon className="w-6 h-6" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-wider truncate">{item.label.replace("Kelola ", "")}</p>
-                <p className="text-2xl font-extrabold text-zinc-900 dark:text-white mt-0.5">{item.count}</p>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors shrink-0" />
-            </Link>
-          );
-        })}
+      {/* ── Statistics Section ─────────────────────────────── */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 px-1">
+          <TrendingUp className="w-4 h-4 text-brand-amber-500" />
+          <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Statistik Konten</h2>
+        </div>
+
+        {/* Row 1 — content with management links */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <LinkStatCard
+            label="Portofolio"
+            count={stats.projects}
+            href="/admin/portfolio"
+            icon={FolderKanban}
+            colorClass="text-blue-500 bg-blue-500/10"
+          />
+          <LinkStatCard
+            label="Layanan"
+            count={stats.services}
+            href="/admin/services"
+            icon={Briefcase}
+            colorClass="text-brand-amber-500 bg-brand-amber-500/10"
+          />
+          <LinkStatCard
+            label="Blog Posts"
+            count={stats.blogs}
+            href="/admin/blog"
+            icon={FileText}
+            colorClass="text-emerald-500 bg-emerald-500/10"
+          />
+        </div>
+
+        {/* Row 2 — submission info cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <InfoStatCard
+            label="Pesan Masuk"
+            count={stats.contacts}
+            icon={Send}
+            colorClass="text-purple-500 bg-purple-500/10"
+          />
+          <InfoStatCard
+            label="Ulasan Masuk"
+            count={stats.reviews}
+            icon={Star}
+            colorClass="text-orange-500 bg-orange-500/10"
+          />
+          <InfoStatCard
+            label="Ulasan Dipublish"
+            count={stats.reviewsPublished}
+            icon={Users}
+            colorClass="text-green-500 bg-green-500/10"
+            badge="Live"
+          />
+        </div>
       </div>
 
-      {/* Collapsible Settings Sections */}
+      {/* ── Collapsible Settings Sections ─────────────────── */}
       <Section title="Identitas & Logo Situs" icon={Globe} defaultOpen={true}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField
@@ -375,7 +475,7 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
         </button>
       </Section>
 
-      {/* Sticky Save Bar */}
+      {/* ── Sticky Save Bar ────────────────────────────────── */}
       <div className="sticky bottom-6 flex justify-end">
         <button
           type="submit"

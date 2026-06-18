@@ -7,6 +7,7 @@
     - [ ] make sure the dashboard works properly.
 
 ## Update 1.1
-    - [ ] refine the admin dashboard UI & UX to make it more modern and user-friendly.
-    - [ ] add a new section to show statistics of the website, like number of visitors, number of contact form submissions, number of reviews, number of portfolio entries, number of blog posts, number of services, number of team members, number of insights, number of challenges, number of solutions, number of timeline, number of design, number of price, number of client, number of materials, number of tags, number of image_urls.
-    - [ ] implement dark & light mode.
+    - [x] refine the admin dashboard UI & UX to make it more modern and user-friendly.
+    - [x] add a new section to show statistics of the website, like number of visitors, number of contact form submissions, number of reviews, number of portfolio entries, number of blog posts, number of services, number of team members, number of insights, number of challenges, number of solutions, number of timeline, number of design, number of price, number of client, number of materials, number of tags, number of image_urls.
+    - [x] implement dark & light mode.
+    - [x] fixing "kustomisasi halaman & seksi" feature logic.
