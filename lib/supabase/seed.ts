@@ -17,7 +17,6 @@ export async function seedDatabase(supabase: SupabaseClient) {
       const { error: seedConfigError } = await supabase
         .from("site_config")
         .insert({
-          id: 1,
           site_name: "Aruna Karsa",
           logo_url: "/logo/logo-horizontal.png",
           contact_email: "info@arunakarsa.co.id",
@@ -55,11 +54,13 @@ export async function seedDatabase(supabase: SupabaseClient) {
           title: "Beranda | Aruna Karsa",
           description: "Aruna Karsa adalah penyedia layanan desain arsitektur, perencanaan anggaran biaya (RAB) transparan, dan kontraktor konstruksi tepercaya.",
           sections: [
+            { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Wujudkan Hunian Impian Anda Bersama Aruna Karsa", subtitle: "Penyedia layanan desain arsitektur, perencanaan anggaran biaya (RAB) transparan, dan kontraktor konstruksi tepercaya. Wujudkan hunian aman, estetis, dan bernilai sepanjang masa.", ctaText: "Hubungi Kami", ctaHref: "/contact", bgImage: "/images/modern_villa.png" },
             { id: "about", enabled: true, title: "TENTANG KAMI", subtitle: "Membangun Lebih dari Sekadar Struktur, Kami Mewujudkan Ruang Kehidupan", body: "Aruna Karsa lahir dari visi untuk menghadirkan layanan konstruksi dan arsitektur yang jujur, transparan, dan berstandar tinggi. Kami percaya bahwa setiap bangunan memiliki cerita..." },
             { id: "services", enabled: true, title: "LAYANAN KAMI", subtitle: "Solusi Konstruksi & Arsitektur Terintegrasi" },
             { id: "portfolio", enabled: true, title: "PORTOFOLIO", subtitle: "Karya Konstruksi & Keindahan Arsitektur Kami" },
-            { id: "contact", enabled: true }
+            { id: "contact", enabled: true },
+            { id: "footer", enabled: true }
           ]
         },
         {
@@ -67,11 +68,13 @@ export async function seedDatabase(supabase: SupabaseClient) {
           title: "Tentang Kami | Aruna Karsa",
           description: "Pelajari visi, misi, dan nilai-nilai fundamental Aruna Karsa dalam menghadirkan desain arsitektur berkualitas dan transparan.",
           sections: [
+            { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Tentang Aruna Karsa", subtitle: "Membangun Dengan Hati, Kualitas Tanpa Kompromi", ctaText: "Hubungi Kami", ctaHref: "/contact", bgImage: "/images/architectural_blueprint.png" },
             { id: "about", enabled: true, title: "TENTANG KAMI", subtitle: "Membangun Lebih dari Sekadar Struktur, Kami Mewujudkan Ruang Kehidupan" },
             { id: "services", enabled: true, title: "Layanan Pendukung", subtitle: "Layanan Utama Kami untuk Membantu Proyek Anda" },
             { id: "portfolio", enabled: true, title: "Proyek Pilihan", subtitle: "Beberapa Hasil Kerja Kami" },
-            { id: "contact", enabled: true }
+            { id: "contact", enabled: true },
+            { id: "footer", enabled: true }
           ]
         },
         {
@@ -79,10 +82,12 @@ export async function seedDatabase(supabase: SupabaseClient) {
           title: "Layanan Kami | Aruna Karsa",
           description: "Layanan desain arsitektur, kontraktor bangunan, desain interior, dan perhitungan RAB transparan.",
           sections: [
+            { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Layanan Terintegrasi", subtitle: "Dari Perencanaan Hingga Serah Terima Kunci", ctaText: "Konsultasi Gratis", ctaHref: "/contact", bgImage: "/images/construction_site.png" },
             { id: "services", enabled: true, title: "LAYANAN KAMI", subtitle: "Solusi Konstruksi & Arsitektur Terintegrasi" },
             { id: "portfolio", enabled: true, title: "Hasil Konstruksi", subtitle: "Bagaimana Layanan Kami Diwujudkan dalam Proyek Nyata" },
-            { id: "contact", enabled: true }
+            { id: "contact", enabled: true },
+            { id: "footer", enabled: true }
           ]
         },
         {
@@ -90,9 +95,11 @@ export async function seedDatabase(supabase: SupabaseClient) {
           title: "Portofolio | Aruna Karsa",
           description: "Portofolio proyek konstruksi, villa modern-tropis, kantor komersil, dan interior hunian mewah Aruna Karsa.",
           sections: [
+            { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Portofolio Karya", subtitle: "Bukti Dedikasi Kami Terhadap Kualitas Konstruksi dan Estetika", ctaText: "Lihat Semua Proyek", ctaHref: "#projects", bgImage: "/images/modern_villa.png" },
             { id: "portfolio", enabled: true, title: "PORTOFOLIO", subtitle: "Karya Konstruksi & Keindahan Arsitektur Kami" },
-            { id: "contact", enabled: true }
+            { id: "contact", enabled: true },
+            { id: "footer", enabled: true }
           ]
         },
         {
@@ -100,8 +107,10 @@ export async function seedDatabase(supabase: SupabaseClient) {
           title: "Hubungi Kami | Aruna Karsa",
           description: "Hubungi tim arsitek dan kontraktor profesional Aruna Karsa untuk mewujudkan bangunan impian Anda.",
           sections: [
+            { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Hubungi Kami", subtitle: "Mari Diskusikan Proyek Bangun Baru, Renovasi, atau Desain Impian Anda", ctaText: "Kontak Langsung", ctaHref: "#contact-details", bgImage: "/images/construction_site.png" },
-            { id: "contact", enabled: true }
+            { id: "contact", enabled: true },
+            { id: "footer", enabled: true }
           ]
         },
         {
@@ -109,9 +118,11 @@ export async function seedDatabase(supabase: SupabaseClient) {
           title: "Blog & Tips Bangunan | Aruna Karsa",
           description: "Kumpulan artikel seputar tips bangunan, desain rumah minimalis modern, konstruksi sipil, dan RAB transparan.",
           sections: [
+            { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Blog & Wawasan Karsa", subtitle: "Kumpulan Tips Arsitektur, Konstruksi, dan Anggaran Biaya Rumah", ctaText: "Baca Artikel", ctaHref: "#blog-list", bgImage: "/images/architectural_blueprint.png" },
             { id: "blog", enabled: true, title: "ARTIKEL TERBARU", subtitle: "Wawasan & Tips Konstruksi Praktis" },
-            { id: "contact", enabled: true }
+            { id: "contact", enabled: true },
+            { id: "footer", enabled: true }
           ]
         }
       ];

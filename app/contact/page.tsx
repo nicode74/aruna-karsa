@@ -17,16 +17,22 @@ export default async function ContactPage() {
   const { config, page } = await getPageData("contact");
 
   const sections = page?.sections || [
+    { id: "navigation", enabled: true },
     { id: "hero", enabled: true },
-    { id: "contact", enabled: true }
+    { id: "contact", enabled: true },
+    { id: "footer", enabled: true }
   ];
+
+  const showHeader = sections.find((s: any) => s.id === "navigation")?.enabled !== false;
+  const showFooter = sections.find((s: any) => s.id === "footer")?.enabled !== false;
 
   return (
     <>
-      <Header config={config} />
+      {showHeader && <Header config={config} />}
       <main className="flex-grow">
         {sections.map((section: any) => {
           if (!section.enabled) return null;
+          if (section.id === "navigation" || section.id === "footer") return null;
 
           switch (section.id) {
             case "hero":
@@ -52,7 +58,7 @@ export default async function ContactPage() {
           }
         })}
       </main>
-      <Footer config={config} />
+      {showFooter && <Footer config={config} />}
     </>
   );
 }

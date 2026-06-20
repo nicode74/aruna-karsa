@@ -11,3 +11,12 @@
     - [x] add a new section to show statistics of the website, like number of visitors, number of contact form submissions, number of reviews, number of portfolio entries, number of blog posts, number of services, number of team members, number of insights, number of challenges, number of solutions, number of timeline, number of design, number of price, number of client, number of materials, number of tags, number of image_urls.
     - [x] implement dark & light mode.
     - [x] fixing "kustomisasi halaman & seksi" feature logic.
+
+## Update 1.2
+    - [ ] create a new customizeable landing page (hero section, about section, services section, portfolio section, contact section, footer section, and navigation bar)
+    - [ ] create a new customizeable services page
+    - [ ] create a new customizeable portfolio page
+    - [ ] create a new customizeable contact page
+    - [ ] create a new customizeable blog page  
+    - [ ] fix the dark and light mode
+    - [ ] make the web more responsive for mobile, tablet and desktop 
