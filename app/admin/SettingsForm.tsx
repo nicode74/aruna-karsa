@@ -346,9 +346,10 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
 
         {/* Row 2 — submission info cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <InfoStatCard
+          <LinkStatCard
             label="Pesan Masuk"
             count={stats.contacts}
+            href="/admin/contacts"
             icon={Send}
             colorClass="text-purple-500 bg-purple-500/10"
           />

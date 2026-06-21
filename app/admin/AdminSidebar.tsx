@@ -17,6 +17,7 @@ import {
   X,
   Compass,
   ExternalLink,
+  Mail,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -52,6 +53,7 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
     { name: "Layanan", href: "/admin/services", icon: Briefcase },
     { name: "Portofolio", href: "/admin/portfolio", icon: FolderKanban },
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },
+    { name: "Pesan Masuk", href: "/admin/contacts", icon: Mail },
   ];
 
   // Derive initials from email for the avatar

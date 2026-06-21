@@ -214,3 +214,35 @@ export async function submitReview(data: {
   return { success: true };
 }
 
+// Get contact submissions (admin only)
+export async function getContactSubmissions() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("contact_submissions")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch contact submissions:", error.message);
+    return { error: error.message };
+  }
+  return { data };
+}
+
+// Delete contact submission (admin only)
+export async function deleteContactSubmission(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("contact_submissions")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Failed to delete contact submission:", error.message);
+    return { error: error.message };
+  }
+  revalidatePath("/admin/contacts");
+  revalidatePath("/admin");
+  return { success: true };
+}
+
