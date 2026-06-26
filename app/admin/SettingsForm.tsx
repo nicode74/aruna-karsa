@@ -28,6 +28,8 @@ import {
   Send,
   Users,
   TrendingUp,
+  Wrench,
+  FileSpreadsheet,
 } from "lucide-react";
 
 const Instagram = (props: React.SVGProps<SVGSVGElement>) => (
@@ -53,6 +55,8 @@ interface SettingsFormProps {
     contacts: number;
     reviews: number;
     reviewsPublished: number;
+    activeProjects: number;
+    invoices: number;
   };
 }
 
@@ -365,6 +369,24 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
             icon={Users}
             colorClass="text-green-500 bg-green-500/10"
             badge="Live"
+          />
+        </div>
+
+        {/* Row 3 — new features */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <LinkStatCard
+            label="Proyek Aktif Berjalan"
+            count={stats.activeProjects}
+            href="/admin/active-projects"
+            icon={Wrench}
+            colorClass="text-brand-amber-600 bg-brand-amber-500/10"
+          />
+          <LinkStatCard
+            label="Invoice & Tagihan"
+            count={stats.invoices}
+            href="/admin/invoices"
+            icon={FileSpreadsheet}
+            colorClass="text-indigo-500 bg-indigo-500/10"
           />
         </div>
       </div>

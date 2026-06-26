@@ -90,6 +90,8 @@ export default async function AboutPage() {
                 <ContactSection
                   key={section.id}
                   config={config}
+                  title={section.title}
+                  subtitle={section.subtitle}
                 />
               );
             default:

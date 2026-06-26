@@ -6,9 +6,11 @@ import { submitContactForm } from "../actions/dbActions";
 
 interface ContactSectionProps {
   config?: any;
+  title?: string;
+  subtitle?: string;
 }
 
-export default function ContactSection({ config }: ContactSectionProps) {
+export default function ContactSection({ config, title, subtitle }: ContactSectionProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -49,16 +51,19 @@ export default function ContactSection({ config }: ContactSectionProps) {
     ? rawWhatsApp
     : `https://wa.me/${rawWhatsApp.replace(/[^\d]/g, "")}`;
 
+  const displayTitle = title || "HUBUNGI KAMI";
+  const displaySubtitle = subtitle || "Mulai Konsultasi Bangunan Impian Anda Hari Ini";
+
   return (
     <section className="py-24 bg-zinc-50 dark:bg-zinc-900 transition-colors">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-xs font-bold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-500">
-            HUBUNGI KAMI
+            {displayTitle}
           </h2>
           <p className="font-display font-extrabold text-3xl sm:text-4xl text-zinc-900 dark:text-white leading-tight">
-            Mulai Konsultasi Bangunan Impian Anda Hari Ini
+            {displaySubtitle}
           </p>
           <div className="w-16 h-1 bg-brand-amber-500 mx-auto rounded-full mt-4" />
         </div>

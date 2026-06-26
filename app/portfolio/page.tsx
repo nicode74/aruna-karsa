@@ -66,6 +66,8 @@ export default async function PortfolioPage() {
                 <ContactSection
                   key={section.id}
                   config={config}
+                  title={section.title}
+                  subtitle={section.subtitle}
                 />
               );
             default:

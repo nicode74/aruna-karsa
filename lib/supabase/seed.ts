@@ -58,8 +58,9 @@ export async function seedDatabase(supabase: SupabaseClient) {
             { id: "hero", enabled: true, title: "Wujudkan Hunian Impian Anda Bersama Aruna Karsa", subtitle: "Penyedia layanan desain arsitektur, perencanaan anggaran biaya (RAB) transparan, dan kontraktor konstruksi tepercaya. Wujudkan hunian aman, estetis, dan bernilai sepanjang masa.", ctaText: "Hubungi Kami", ctaHref: "/contact", bgImage: "/images/modern_villa.png" },
             { id: "about", enabled: true, title: "TENTANG KAMI", subtitle: "Membangun Lebih dari Sekadar Struktur, Kami Mewujudkan Ruang Kehidupan", body: "Aruna Karsa lahir dari visi untuk menghadirkan layanan konstruksi dan arsitektur yang jujur, transparan, dan berstandar tinggi. Kami percaya bahwa setiap bangunan memiliki cerita..." },
             { id: "services", enabled: true, title: "LAYANAN KAMI", subtitle: "Solusi Konstruksi & Arsitektur Terintegrasi" },
+            { id: "active_projects", enabled: true, title: "PROYEK BERJALAN", subtitle: "Proses Konstruksi & Progres Kerja Nyata Kami" },
             { id: "portfolio", enabled: true, title: "PORTOFOLIO", subtitle: "Karya Konstruksi & Keindahan Arsitektur Kami" },
-            { id: "contact", enabled: true },
+            { id: "contact", enabled: true, title: "HUBUNGI KAMI", subtitle: "Mulai Konsultasi Bangunan Impian Anda Hari Ini" },
             { id: "footer", enabled: true }
           ]
         },
@@ -73,7 +74,7 @@ export async function seedDatabase(supabase: SupabaseClient) {
             { id: "about", enabled: true, title: "TENTANG KAMI", subtitle: "Membangun Lebih dari Sekadar Struktur, Kami Mewujudkan Ruang Kehidupan" },
             { id: "services", enabled: true, title: "Layanan Pendukung", subtitle: "Layanan Utama Kami untuk Membantu Proyek Anda" },
             { id: "portfolio", enabled: true, title: "Proyek Pilihan", subtitle: "Beberapa Hasil Kerja Kami" },
-            { id: "contact", enabled: true },
+            { id: "contact", enabled: true, title: "HUBUNGI KAMI", subtitle: "Mulai Konsultasi Bangunan Impian Anda Hari Ini" },
             { id: "footer", enabled: true }
           ]
         },
@@ -86,7 +87,7 @@ export async function seedDatabase(supabase: SupabaseClient) {
             { id: "hero", enabled: true, title: "Layanan Terintegrasi", subtitle: "Dari Perencanaan Hingga Serah Terima Kunci", ctaText: "Konsultasi Gratis", ctaHref: "/contact", bgImage: "/images/construction_site.png" },
             { id: "services", enabled: true, title: "LAYANAN KAMI", subtitle: "Solusi Konstruksi & Arsitektur Terintegrasi" },
             { id: "portfolio", enabled: true, title: "Hasil Konstruksi", subtitle: "Bagaimana Layanan Kami Diwujudkan dalam Proyek Nyata" },
-            { id: "contact", enabled: true },
+            { id: "contact", enabled: true, title: "HUBUNGI KAMI", subtitle: "Mulai Konsultasi Bangunan Impian Anda Hari Ini" },
             { id: "footer", enabled: true }
           ]
         },
@@ -98,7 +99,7 @@ export async function seedDatabase(supabase: SupabaseClient) {
             { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Portofolio Karya", subtitle: "Bukti Dedikasi Kami Terhadap Kualitas Konstruksi dan Estetika", ctaText: "Lihat Semua Proyek", ctaHref: "#projects", bgImage: "/images/modern_villa.png" },
             { id: "portfolio", enabled: true, title: "PORTOFOLIO", subtitle: "Karya Konstruksi & Keindahan Arsitektur Kami" },
-            { id: "contact", enabled: true },
+            { id: "contact", enabled: true, title: "HUBUNGI KAMI", subtitle: "Mulai Konsultasi Bangunan Impian Anda Hari Ini" },
             { id: "footer", enabled: true }
           ]
         },
@@ -109,7 +110,7 @@ export async function seedDatabase(supabase: SupabaseClient) {
           sections: [
             { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Hubungi Kami", subtitle: "Mari Diskusikan Proyek Bangun Baru, Renovasi, atau Desain Impian Anda", ctaText: "Kontak Langsung", ctaHref: "#contact-details", bgImage: "/images/construction_site.png" },
-            { id: "contact", enabled: true },
+            { id: "contact", enabled: true, title: "HUBUNGI KAMI", subtitle: "Mulai Konsultasi Bangunan Impian Anda Hari Ini" },
             { id: "footer", enabled: true }
           ]
         },
@@ -121,7 +122,7 @@ export async function seedDatabase(supabase: SupabaseClient) {
             { id: "navigation", enabled: true },
             { id: "hero", enabled: true, title: "Blog & Wawasan Karsa", subtitle: "Kumpulan Tips Arsitektur, Konstruksi, dan Anggaran Biaya Rumah", ctaText: "Baca Artikel", ctaHref: "#blog-list", bgImage: "/images/architectural_blueprint.png" },
             { id: "blog", enabled: true, title: "ARTIKEL TERBARU", subtitle: "Wawasan & Tips Konstruksi Praktis" },
-            { id: "contact", enabled: true },
+            { id: "contact", enabled: true, title: "HUBUNGI KAMI", subtitle: "Mulai Konsultasi Bangunan Impian Anda Hari Ini" },
             { id: "footer", enabled: true }
           ]
         }
@@ -314,6 +315,126 @@ export async function seedDatabase(supabase: SupabaseClient) {
         return { success: false, error: seedBlogError.message };
       }
       console.log("Seeded blog_posts successfully.");
+    }
+
+    // 6. Seed active_projects
+    const { data: existingActiveProjects, error: activeProjectsCheckError } = await supabase
+      .from("active_projects")
+      .select("id")
+      .limit(1);
+
+    if (activeProjectsCheckError) {
+      console.error("Error checking active_projects:", activeProjectsCheckError);
+      return { success: false, error: activeProjectsCheckError.message };
+    }
+
+    if (existingActiveProjects.length === 0) {
+      const defaultActiveProjects = [
+        {
+          name: "Konstruksi Villa Uluwatu",
+          client_name: "Bpk. Ronald",
+          status: "Konstruksi",
+          progress_percentage: 45,
+          start_date: "Maret 2026",
+          target_date: "November 2026",
+          description: "Pembangunan fisik struktur beton dan finishing bata merah terekspos untuk villa modern tropis di tepi tebing Uluwatu."
+        },
+        {
+          name: "Renovasi Office Sudirman",
+          client_name: "PT Tech Indo",
+          status: "Finishing",
+          progress_percentage: 85,
+          start_date: "Mei 2026",
+          target_date: "Juli 2026",
+          description: "Pengerjaan interior glass partition, lighting, dan custom workstation furniture untuk kantor startup digital."
+        },
+        {
+          name: "Perencanaan Rumah Minimalis Cibubur",
+          client_name: "Ibu Dian",
+          status: "Perencanaan",
+          progress_percentage: 15,
+          start_date: "Juni 2026",
+          target_date: "Agustus 2026",
+          description: "Penyusunan gambar DED (Detail Engineering Design) dan perhitungan RAB transparan untuk rumah tinggal 2 lantai."
+        }
+      ];
+
+      const { error: seedActiveError } = await supabase
+        .from("active_projects")
+        .insert(defaultActiveProjects);
+
+      if (seedActiveError) {
+        console.error("Error seeding active_projects:", seedActiveError);
+        return { success: false, error: seedActiveError.message };
+      }
+      console.log("Seeded active_projects successfully.");
+    }
+
+    // 7. Seed invoices
+    const { data: existingInvoices, error: invoicesCheckError } = await supabase
+      .from("invoices")
+      .select("id")
+      .limit(1);
+
+    if (invoicesCheckError) {
+      console.error("Error checking invoices:", invoicesCheckError);
+      return { success: false, error: invoicesCheckError.message };
+    }
+
+    if (existingInvoices.length === 0) {
+      const defaultInvoices = [
+        {
+          invoice_number: "INV/2026/001",
+          client_name: "Bpk. Ronald",
+          client_email: "ronald@example.com",
+          project_name: "Konstruksi Villa Uluwatu",
+          amount: 250000000,
+          status: "Paid",
+          issue_date: "2026-03-10",
+          due_date: "2026-03-24",
+          invoice_file_url: "https://drive.google.com/drive/folders/test-invoice-1",
+          payment_history: [
+            { date: "2026-03-12", amount: 250000000, method: "Transfer BCA", note: "DP Pembayaran Struktur awal" }
+          ],
+          reminders_sent: 0
+        },
+        {
+          invoice_number: "INV/2026/002",
+          client_name: "PT Tech Indo",
+          client_email: "finance@techindo.com",
+          project_name: "Renovasi Office Sudirman",
+          amount: 120000000,
+          status: "Sent",
+          issue_date: "2026-06-01",
+          due_date: "2026-06-30",
+          invoice_file_url: "https://drive.google.com/drive/folders/test-invoice-2",
+          payment_history: [],
+          reminders_sent: 1
+        },
+        {
+          invoice_number: "INV/2026/003",
+          client_name: "Ibu Dian",
+          client_email: "dian@cibubur.net",
+          project_name: "Perencanaan Rumah Minimalis Cibubur",
+          amount: 35000000,
+          status: "Draft",
+          issue_date: "2026-06-25",
+          due_date: "2026-07-10",
+          invoice_file_url: "https://drive.google.com/drive/folders/test-invoice-3",
+          payment_history: [],
+          reminders_sent: 0
+        }
+      ];
+
+      const { error: seedInvoicesError } = await supabase
+        .from("invoices")
+        .insert(defaultInvoices);
+
+      if (seedInvoicesError) {
+        console.error("Error seeding invoices:", seedInvoicesError);
+        return { success: false, error: seedInvoicesError.message };
+      }
+      console.log("Seeded invoices successfully.");
     }
 
     return { success: true };

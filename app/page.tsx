@@ -1,10 +1,11 @@
 import React from "react";
-import { getPageData, getServices, getProjects } from "../lib/supabase/helpers";
+import { getPageData, getServices, getProjects, getActiveProjects } from "../lib/supabase/helpers";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import AboutSection from "./components/AboutSection";
 import ServicesSection from "./components/ServicesSection";
 import PortfolioSection from "./components/PortfolioSection";
+import ActiveProjectsSection from "./components/ActiveProjectsSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 
@@ -22,12 +23,14 @@ export default async function Home() {
   // Fetch dynamic collections
   const services = await getServices();
   const projects = await getProjects();
+  const activeProjects = await getActiveProjects();
 
   const sections = page?.sections || [
     { id: "navigation", enabled: true },
     { id: "hero", enabled: true },
     { id: "about", enabled: true },
     { id: "services", enabled: true },
+    { id: "active_projects", enabled: true },
     { id: "portfolio", enabled: true },
     { id: "contact", enabled: true },
     { id: "footer", enabled: true }
@@ -75,6 +78,15 @@ export default async function Home() {
                   services={services}
                 />
               );
+            case "active_projects":
+              return (
+                <ActiveProjectsSection
+                  key={section.id}
+                  title={section.title}
+                  subtitle={section.subtitle}
+                  projects={activeProjects}
+                />
+              );
             case "portfolio":
               return (
                 <PortfolioSection
@@ -90,6 +102,8 @@ export default async function Home() {
                 <ContactSection
                   key={section.id}
                   config={config}
+                  title={section.title}
+                  subtitle={section.subtitle}
                 />
               );
             default:

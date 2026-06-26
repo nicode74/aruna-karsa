@@ -12,11 +12,13 @@
     - [x] implement dark & light mode.
     - [x] fixing "kustomisasi halaman & seksi" feature logic.
 
-## Update 1.2
-    - [ ] create a new customizeable landing page (hero section, about section, services section, portfolio section, contact section, footer section, and navigation bar)
-    - [ ] create a new customizeable services page
-    - [ ] create a new customizeable portfolio page
-    - [ ] create a new customizeable contact page
-    - [ ] create a new customizeable blog page  
-    - [ ] fix the dark and light mode
-    - [ ] make the web more responsive for mobile, tablet and desktop 
+## Update 1.2 Feature and UI/UX Improvements
+    - [x] create a new customizeable landing page (hero section, about section, services section, portfolio section, contact section, footer section, and navigation bar)
+    - [x] create a new customizeable services page
+    - [x] create a new customizeable portfolio page
+    - [x] create a new customizeable contact page
+    - [x] create a new customizeable blog page  
+    - [x] fix the dark and light mode
+    - [x] make the web more responsive for mobile, tablet and desktop
+    - [x] make a new feature : online invoice tools. manager and head studio can create and send invoice to client. more than that, we can view invoice status, track payments, send reminders to client, and generate reports. We can also view payment history, and generate reports. and can we use google drive or discord to store the invoice file so we will not exhaust the supabase storage? And make a UI for it on the dashboard.
+    - [x] add a new section to show current project we're working on. more than that, we can view project status. And make a UI for it on the dashboard.

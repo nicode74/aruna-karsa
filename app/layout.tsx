@@ -46,14 +46,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeFilter />
-        {typeof window === "undefined" && (
-          <script
-            id="theme-init"
-            dangerouslySetInnerHTML={{
-              __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
-            }}
-          />
-        )}
+        <script
+          id="theme-init"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
+          }}
+        />
         {children}
       </body>
     </html>

@@ -213,8 +213,8 @@ export default function PortfolioSection({
 
         {/* Project Modal Overlay */}
         {selectedProject && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 overflow-y-auto animate-fadeIn">
-            <div className="bg-white dark:bg-zinc-950 rounded-3xl max-w-3xl w-full border border-zinc-200 dark:border-zinc-800 shadow-2xl relative overflow-hidden my-8">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 md:p-10 flex justify-center items-start sm:items-center animate-fadeIn">
+            <div className="bg-white dark:bg-zinc-950 rounded-3xl max-w-3xl w-full border border-zinc-200 dark:border-zinc-800 shadow-2xl relative overflow-hidden my-8 sm:my-auto">
               {/* Header Image */}
               <div className="relative aspect-video w-full bg-zinc-200">
                 <Image

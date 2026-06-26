@@ -246,3 +246,76 @@ export async function deleteContactSubmission(id: string) {
   return { success: true };
 }
 
+// Active Projects CRUD (admin only)
+export async function saveActiveProject(project: any) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("active_projects")
+    .upsert(project);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function deleteActiveProject(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("active_projects")
+    .delete()
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+// Invoices CRUD (admin only)
+export async function saveInvoice(invoice: any) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("invoices")
+    .upsert(invoice);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function deleteInvoice(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("invoices")
+    .delete()
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function sendInvoiceReminderAction(id: string) {
+  const supabase = await createClient();
+  
+  // Fetch current reminder count
+  const { data: invoice, error: fetchError } = await supabase
+    .from("invoices")
+    .select("reminders_sent, client_name, invoice_number")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) return { error: fetchError.message };
+
+  const newRemindersCount = (invoice?.reminders_sent || 0) + 1;
+
+  const { error: updateError } = await supabase
+    .from("invoices")
+    .update({ reminders_sent: newRemindersCount })
+    .eq("id", id);
+
+  if (updateError) return { error: updateError.message };
+  
+  return { success: true, count: newRemindersCount };
+}
+
+

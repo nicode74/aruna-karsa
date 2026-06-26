@@ -18,6 +18,8 @@ import {
   Compass,
   ExternalLink,
   Mail,
+  FileSpreadsheet,
+  Wrench,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -50,6 +52,8 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
   const menuItems = [
     { name: "Pengaturan Utama", href: "/admin", icon: LayoutDashboard },
     { name: "Halaman & Seksi", href: "/admin/pages", icon: Compass },
+    { name: "Proyek Aktif", href: "/admin/active-projects", icon: Wrench },
+    { name: "Invoice Tools", href: "/admin/invoices", icon: FileSpreadsheet },
     { name: "Layanan", href: "/admin/services", icon: Briefcase },
     { name: "Portofolio", href: "/admin/portfolio", icon: FolderKanban },
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },

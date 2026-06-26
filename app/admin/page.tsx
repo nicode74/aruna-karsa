@@ -14,12 +14,14 @@ export default async function AdminPage() {
 
   // Query counts for statistics
   const [
-    { count: servicesCount },
-    { count: portfolioCount },
-    { count: blogCount },
-    { count: contactCount },
-    { count: reviewsCount },
-    { count: reviewsPublishedCount },
+    servicesRes,
+    portfolioRes,
+    blogRes,
+    contactRes,
+    reviewsRes,
+    reviewsPublishedRes,
+    activeProjectsRes,
+    invoicesRes,
   ] = await Promise.all([
     supabase.from("services").select("*", { count: "exact", head: true }),
     supabase.from("portfolio").select("*", { count: "exact", head: true }),
@@ -27,15 +29,19 @@ export default async function AdminPage() {
     supabase.from("contact_submissions").select("*", { count: "exact", head: true }),
     supabase.from("reviews").select("*", { count: "exact", head: true }),
     supabase.from("reviews").select("*", { count: "exact", head: true }).eq("is_published", true),
+    supabase.from("active_projects").select("*", { count: "exact", head: true }),
+    supabase.from("invoices").select("*", { count: "exact", head: true }),
   ]);
 
   const stats = {
-    services: servicesCount ?? 0,
-    projects: portfolioCount ?? 0,
-    blogs: blogCount ?? 0,
-    contacts: contactCount ?? 0,
-    reviews: reviewsCount ?? 0,
-    reviewsPublished: reviewsPublishedCount ?? 0,
+    services: servicesRes.count ?? 0,
+    projects: portfolioRes.count ?? 0,
+    blogs: blogRes.count ?? 0,
+    contacts: contactRes.count ?? 0,
+    reviews: reviewsRes.count ?? 0,
+    reviewsPublished: reviewsPublishedRes.count ?? 0,
+    activeProjects: activeProjectsRes.count ?? 0,
+    invoices: invoicesRes.count ?? 0,
   };
 
   return <SettingsForm initialConfig={config} stats={stats} />;

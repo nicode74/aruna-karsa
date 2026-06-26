@@ -136,3 +136,25 @@ export async function getBlogPostBySlug(slug: string) {
     return defaultBlogPosts.find((p) => p.slug === slug) || null;
   }
 }
+
+export async function getActiveProjects() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("active_projects")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching active projects:", error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error("Exception fetching active projects:", err);
+    return [];
+  }
+}
+
