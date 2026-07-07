@@ -297,25 +297,32 @@ export async function deleteInvoice(id: string) {
 export async function sendInvoiceReminderAction(id: string) {
   const supabase = await createClient();
   
-  // Fetch current reminder count
+  // Fetch current reminder count and status
   const { data: invoice, error: fetchError } = await supabase
     .from("invoices")
-    .select("reminders_sent, client_name, invoice_number")
+    .select("reminders_sent, client_name, invoice_number, status")
     .eq("id", id)
     .single();
 
   if (fetchError) return { error: fetchError.message };
 
   const newRemindersCount = (invoice?.reminders_sent || 0) + 1;
+  const updates: any = { reminders_sent: newRemindersCount };
+  let newStatus = invoice?.status;
+
+  if (invoice?.status === "Draft") {
+    newStatus = "Sent";
+    updates.status = "Sent";
+  }
 
   const { error: updateError } = await supabase
     .from("invoices")
-    .update({ reminders_sent: newRemindersCount })
+    .update(updates)
     .eq("id", id);
 
   if (updateError) return { error: updateError.message };
   
-  return { success: true, count: newRemindersCount };
+  return { success: true, count: newRemindersCount, status: newStatus };
 }
 
 

@@ -203,22 +203,58 @@ export default function InvoicesForm({ initialInvoices }: InvoicesFormProps) {
     }
   };
 
-  const handleSendReminder = async (id: string, number: string) => {
-    setLoadingId(id);
+  const handleSendReminder = async (invoice: Invoice) => {
+    if (!invoice.id) return;
+    setLoadingId(invoice.id);
     setMessage(null);
 
-    const res = await sendInvoiceReminderAction(id);
+    const res = await sendInvoiceReminderAction(invoice.id);
     setLoadingId(null);
 
     if (res.error) {
-      setMessage({ type: "error", text: `Gagal mengirim pengingat: ${res.error}` });
+      setMessage({ type: "error", text: `Gagal mengirim email: ${res.error}` });
     } else {
+      const isDraft = invoice.status === "Draft";
+      const subject = encodeURIComponent(
+        isDraft 
+          ? `Invoice ${invoice.invoice_number} - Aruna Karsa` 
+          : `Pengingat Pembayaran: Invoice ${invoice.invoice_number} - Aruna Karsa`
+      );
+      
+      const body = encodeURIComponent(
+        `Halo ${invoice.client_name},\n\n` +
+        (isDraft 
+          ? `Berikut kami kirimkan tagihan invoice ${invoice.invoice_number} untuk proyek "${invoice.project_name}".\n\n`
+          : `Ini adalah pengingat untuk pembayaran invoice ${invoice.invoice_number} untuk proyek "${invoice.project_name}".\n\n`) +
+        `Detail Tagihan:\n` +
+        `- Nomor Invoice: ${invoice.invoice_number}\n` +
+        `- Proyek: ${invoice.project_name}\n` +
+        `- Jumlah: Rp ${Number(invoice.amount).toLocaleString("id-ID")}\n` +
+        `- Tanggal Jatuh Tempo: ${invoice.due_date}\n` +
+        (invoice.invoice_file_url ? `- Tautan Dokumen: ${invoice.invoice_file_url}\n\n` : `\n`) +
+        (isDraft
+          ? `Mohon lakukan pembayaran sebelum tanggal jatuh tempo. Terima kasih atas kerja sama Anda.\n\n`
+          : `Mohon segera melakukan pembayaran sebelum tanggal jatuh tempo. Jika Anda sudah melakukan pembayaran, mohon abaikan email ini atau hubungi kami untuk konfirmasi.\n\n`) +
+        `Terima kasih,\n` +
+        `Studio Aruna Karsa`
+      );
+
+      // Open user's email client
+      window.location.href = `mailto:${invoice.client_email}?subject=${subject}&body=${body}`;
+
       setMessage({
         type: "success",
-        text: `Pengingat berhasil dikirim (simulasi) ke email client untuk invoice "${number}". Total pengingat terkirim: ${res.count}`,
+        text: isDraft
+          ? `Invoice "${invoice.invoice_number}" berhasil dikirim! Membuka email client untuk ${invoice.client_email}.`
+          : `Pengingat berhasil dikirim! Membuka email client untuk ${invoice.client_email} untuk invoice "${invoice.invoice_number}". Total pengingat terkirim: ${res.count}`,
       });
+
       setInvoices((prev) =>
-        prev.map((inv) => (inv.id === id ? { ...inv, reminders_sent: res.count ?? 0 } : inv))
+        prev.map((inv) =>
+          inv.id === invoice.id
+            ? { ...inv, reminders_sent: res.count ?? 0, status: res.status ?? inv.status }
+            : inv
+        )
       );
     }
   };
@@ -413,10 +449,10 @@ export default function InvoicesForm({ initialInvoices }: InvoicesFormProps) {
                           </button>
                           {inv.status !== "Paid" && (
                             <button
-                              onClick={() => inv.id && handleSendReminder(inv.id, inv.invoice_number)}
+                              onClick={() => handleSendReminder(inv)}
                               disabled={loadingId === inv.id}
                               className="p-2 rounded-lg text-zinc-400 hover:text-brand-amber-500 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                              title="Kirim Pengingat"
+                              title={inv.status === "Draft" ? "Kirim Invoice" : "Kirim Pengingat"}
                             >
                               <Send className="w-3.5 h-3.5" />
                             </button>

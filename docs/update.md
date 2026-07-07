@@ -22,3 +22,8 @@
     - [x] make the web more responsive for mobile, tablet and desktop
     - [x] make a new feature : online invoice tools. manager and head studio can create and send invoice to client. more than that, we can view invoice status, track payments, send reminders to client, and generate reports. We can also view payment history, and generate reports. and can we use google drive or discord to store the invoice file so we will not exhaust the supabase storage? And make a UI for it on the dashboard.
     - [x] add a new section to show current project we're working on. more than that, we can view project status. And make a UI for it on the dashboard.
+
+## Update 1.3 Corn Job and bug fix
+    - [x] make a corn job to keep the server alive. 
+    - [x] make a corn job to keep the supabase alive.
+    - [x] fix the invoice email logic on the dashboard.
