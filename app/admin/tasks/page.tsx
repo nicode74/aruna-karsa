@@ -17,15 +17,24 @@ export default async function AdminTasksPage() {
 
   // Bootstrapping: Auto-insert logged-in admin user into staff_members table
   let currentStaff = staff.find((s: any) => s.email === user.email);
+  const isMainAdmin = user.email.includes("admin");
   if (!currentStaff) {
     const isFirstStaff = staff.length === 0;
     const newStaff = {
       email: user.email,
       name: user.email.split("@")[0].toUpperCase(),
-      role: isFirstStaff ? "manager" : "staff",
+      role: (isFirstStaff || isMainAdmin) ? "manager" : "staff",
     };
     
     const res = await saveStaffMember(newStaff);
+    if (!res.error) {
+      staff = await getStaffMembers();
+      currentStaff = staff.find((s: any) => s.email === user.email);
+    }
+  } else if (isMainAdmin && currentStaff.role !== "manager") {
+    // Automatically upgrade admin user to manager if they are registered as staff
+    currentStaff.role = "manager";
+    const res = await saveStaffMember(currentStaff);
     if (!res.error) {
       staff = await getStaffMembers();
       currentStaff = staff.find((s: any) => s.email === user.email);

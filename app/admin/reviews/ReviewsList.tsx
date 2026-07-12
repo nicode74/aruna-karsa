@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { publishReview, deleteReview } from "../../actions/dbActions";
+import { publishReview, deleteReview, saveReview } from "../../actions/dbActions";
 import {
   Star,
   Trash2,
@@ -14,6 +14,10 @@ import {
   AlertCircle,
   Clock,
   Filter,
+  Plus,
+  Edit2,
+  X,
+  Save,
 } from "lucide-react";
 
 interface Review {
@@ -37,6 +41,34 @@ export default function ReviewsList({ initialReviews }: ReviewsListProps) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Add & Edit form state
+  const [showForm, setShowForm] = useState(false);
+  const [editingReview, setEditingReview] = useState<Partial<Review> | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Handle save review (upsert)
+  const handleSaveReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingReview?.name || !editingReview?.message || !editingReview?.rating) {
+      setMessage({ type: "error", text: "Nama, bintang, dan isi pesan ulasan wajib diisi!" });
+      return;
+    }
+    setSaving(true);
+    setMessage(null);
+
+    const res = await saveReview(editingReview);
+    setSaving(false);
+
+    if (res.error) {
+      setMessage({ type: "error", text: `Gagal menyimpan ulasan: ${res.error}` });
+    } else {
+      setMessage({ type: "success", text: "Ulasan berhasil disimpan!" });
+      setShowForm(false);
+      setEditingReview(null);
+      window.location.reload();
+    }
+  };
 
   // Format date helper
   const formatDate = (dateStr: string) => {
@@ -131,13 +163,123 @@ export default function ReviewsList({ initialReviews }: ReviewsListProps) {
             Kelola Ulasan Klien
           </h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Moderasi, publikasikan, atau hapus ulasan testimonial dari klien website
+            Moderasi, publikasikan, tambahkan, edit, atau hapus ulasan testimonial dari klien website
           </p>
         </div>
-        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-wider text-zinc-650 dark:text-zinc-350 self-start sm:self-auto">
-          Total: {reviews.length} Ulasan
+        <div className="flex gap-2 self-start sm:self-auto shrink-0">
+          <button
+            onClick={() => {
+              setEditingReview({
+                name: "",
+                rating: 5,
+                message: "",
+                is_published: false,
+              });
+              setShowForm(true);
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-zinc-900 hover:bg-brand-amber-600 dark:bg-zinc-100 dark:hover:bg-brand-amber-500 dark:text-zinc-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            Tambah Ulasan
+          </button>
+          <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 px-4 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider text-zinc-650 dark:text-zinc-350 flex items-center">
+            Total: {reviews.length} Ulasan
+          </div>
         </div>
       </div>
+
+      {/* Review Form Dialog / Modal */}
+      {showForm && editingReview && (
+        <form
+          onSubmit={handleSaveReview}
+          className="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 shadow-sm space-y-6 animate-fadeIn"
+        >
+          <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            <h2 className="font-display font-extrabold text-lg text-zinc-900 dark:text-white">
+              {editingReview.id ? "Edit Ulasan Klien" : "Tambah Ulasan Klien Baru"}
+            </h2>
+            <button
+              type="button"
+              onClick={() => { setShowForm(false); setEditingReview(null); }}
+              className="p-1 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:bg-zinc-50"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Nama Klien / Penulis</label>
+              <input
+                type="text"
+                required
+                value={editingReview.name || ""}
+                onChange={(e) => setEditingReview({ ...editingReview, name: e.target.value })}
+                placeholder="Contoh: Bpk. Adrian Wijaya"
+                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Rating Bintang</label>
+              <select
+                value={editingReview.rating || 5}
+                onChange={(e) => setEditingReview({ ...editingReview, rating: parseInt(e.target.value) })}
+                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+              >
+                <option value={5}>5 Bintang</option>
+                <option value={4}>4 Bintang</option>
+                <option value={3}>3 Bintang</option>
+                <option value={2}>2 Bintang</option>
+                <option value={1}>1 Bintang</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Pesan Ulasan / Testimoni</label>
+              <textarea
+                rows={4}
+                required
+                value={editingReview.message || ""}
+                onChange={(e) => setEditingReview({ ...editingReview, message: e.target.value })}
+                placeholder="Contoh: Sangat puas dengan hasil pengerjaan desain interior dari Aruna Karsa. Detail estetika sangat diperhatikan..."
+                className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500"
+              />
+            </div>
+
+            <div className="flex items-center gap-2.5 md:col-span-2">
+              <input
+                type="checkbox"
+                id="is_published"
+                checked={editingReview.is_published || false}
+                onChange={(e) => setEditingReview({ ...editingReview, is_published: e.target.checked })}
+                className="w-4 h-4 rounded text-brand-amber-500 focus:ring-brand-amber-500 border-zinc-300 dark:border-zinc-800"
+              />
+              <label htmlFor="is_published" className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 cursor-pointer">
+                Terbitkan ulasan ini langsung ke halaman utama
+              </label>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <button
+              type="button"
+              onClick={() => { setShowForm(false); setEditingReview(null); }}
+              className="px-5 py-2.5 border border-zinc-200 dark:border-zinc-800 text-zinc-650 text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-zinc-50"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-900 hover:bg-brand-amber-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md disabled:opacity-50"
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Simpan Ulasan
+            </button>
+          </div>
+        </form>
+      )}
 
       {/* Alert Message */}
       {message && (
@@ -320,6 +462,16 @@ export default function ReviewsList({ initialReviews }: ReviewsListProps) {
                         Terbitkan
                       </>
                     )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditingReview(review);
+                      setShowForm(true);
+                    }}
+                    className="p-2 text-zinc-500 hover:text-zinc-750 hover:bg-zinc-50 dark:hover:bg-zinc-850/20 rounded-xl transition-colors border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800/30"
+                    aria-label="Edit review"
+                  >
+                    <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(review.id)}

@@ -350,6 +350,17 @@ export async function deleteReview(id: string) {
   return { success: true };
 }
 
+export async function saveReview(review: any) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("reviews")
+    .upsert(review);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
 // Staff Management Actions
 export async function saveStaffMember(staff: any) {
   const supabase = await createClient();
