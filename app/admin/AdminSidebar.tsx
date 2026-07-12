@@ -20,6 +20,8 @@ import {
   Mail,
   FileSpreadsheet,
   Wrench,
+  Star,
+  ListTodo,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -58,6 +60,8 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
     { name: "Portofolio", href: "/admin/portfolio", icon: FolderKanban },
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },
     { name: "Pesan Masuk", href: "/admin/contacts", icon: Mail },
+    { name: "Kelola Ulasan", href: "/admin/reviews", icon: Star },
+    { name: "Tugas & Timeline", href: "/admin/tasks", icon: ListTodo },
   ];
 
   // Derive initials from email for the avatar

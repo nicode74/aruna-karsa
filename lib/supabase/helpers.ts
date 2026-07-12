@@ -158,3 +158,89 @@ export async function getActiveProjects() {
   }
 }
 
+export async function getPublishedReviews() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("reviews")
+      .select("*")
+      .eq("is_published", true)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching published reviews:", error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error("Exception fetching published reviews:", err);
+    return [];
+  }
+}
+
+export async function getReviews() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("reviews")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching reviews:", error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error("Exception fetching reviews:", err);
+    return [];
+  }
+}
+
+export async function getStaffMembers() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("staff_members")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching staff members:", error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error("Exception fetching staff members:", err);
+    return [];
+  }
+}
+
+export async function getTasks() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("due_date", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching tasks:", error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error("Exception fetching tasks:", err);
+    return [];
+  }
+}
+
+

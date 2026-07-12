@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Filter, MapPin, Calendar, Ruler, CheckCircle2, RefreshCw, Layers } from "lucide-react";
+import { ArrowRight, Filter, MapPin, Calendar, Ruler, CheckCircle2, RefreshCw, Layers, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Project {
   id: any;
@@ -17,6 +17,8 @@ interface Project {
   status: "Selesai" | "Pembangunan" | "Perencanaan";
   image_url?: string;
   image?: string;
+  image_urls?: string[];
+  team_members?: string[];
   description: string;
   client: string;
   materials: string[];
@@ -37,6 +39,21 @@ export default function PortfolioSection({
 }: PortfolioSectionProps) {
   const [filter, setFilter] = useState<"all" | "residential" | "commercial" | "interior">("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const selectProject = (project: Project | null) => {
+    setSelectedProject(project);
+    setCurrentImageIndex(0);
+  };
+
+  const formatArea = (area: string) => {
+    if (!area) return "";
+    const cleaned = area.trim();
+    if (cleaned.toLowerCase().includes("m²") || cleaned.toLowerCase().includes("m2")) {
+      return cleaned;
+    }
+    return `${cleaned} m²`;
+  };
 
   const defaultProjects: Project[] = [
     {
@@ -85,11 +102,16 @@ export default function PortfolioSection({
 
   const rawProjects = propProjects || defaultProjects;
 
-  const projects = rawProjects.map(p => ({
-    ...p,
-    image: p.image_url || p.image || "/images/modern_villa.png",
-    categoryLabel: p.category_label || p.categoryLabel || "Residensial"
-  }));
+  const projects = rawProjects.map(p => {
+    const listUrls = p.image_urls || [];
+    const firstUrl = listUrls[0] || p.image_url || p.image || "/images/modern_villa.png";
+    return {
+      ...p,
+      image: firstUrl,
+      image_urls: listUrls.length > 0 ? listUrls : [firstUrl],
+      categoryLabel: p.category_label || p.categoryLabel || "Residensial"
+    };
+  });
 
   const filteredProjects = filter === "all"
     ? projects
@@ -158,7 +180,7 @@ export default function PortfolioSection({
           {displayProjects.map((project) => (
             <div
               key={project.id}
-              onClick={() => setSelectedProject(project)}
+              onClick={() => selectProject(project)}
               className="group cursor-pointer rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 hover:border-brand-amber-500/30 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 shadow-sm"
             >
               {/* Image Frame */}
@@ -215,17 +237,72 @@ export default function PortfolioSection({
         {selectedProject && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 md:p-10 flex justify-center items-start sm:items-center animate-fadeIn">
             <div className="bg-white dark:bg-zinc-950 rounded-3xl max-w-3xl w-full border border-zinc-200 dark:border-zinc-800 shadow-2xl relative overflow-hidden my-8 sm:my-auto">
-              {/* Header Image */}
+              {/* Header Image / Slideshow */}
               <div className="relative aspect-video w-full bg-zinc-200">
-                <Image
-                  src={selectedProject.image || "/images/modern_villa.png"}
-                  alt={selectedProject.title}
-                  fill
-                  className="object-cover"
-                />
+                {selectedProject.image_urls && selectedProject.image_urls.length > 0 ? (
+                  <Image
+                    src={selectedProject.image_urls[currentImageIndex] || "/images/modern_villa.png"}
+                    alt={selectedProject.title}
+                    fill
+                    className="object-cover transition-all duration-300"
+                  />
+                ) : (
+                  <Image
+                    src={selectedProject.image || "/images/modern_villa.png"}
+                    alt={selectedProject.title}
+                    fill
+                    className="object-cover"
+                  />
+                )}
+
+                {/* Slideshow Navigation Buttons */}
+                {selectedProject.image_urls && selectedProject.image_urls.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentImageIndex((prev) =>
+                          prev === 0 ? selectedProject.image_urls!.length - 1 : prev - 1
+                        );
+                      }}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center transition-colors shadow-md border border-white/10 z-20"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentImageIndex((prev) =>
+                          prev === selectedProject.image_urls!.length - 1 ? 0 : prev + 1
+                        );
+                      }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center transition-colors shadow-md border border-white/10 z-20"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+
+                    {/* Dots indicators */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-25">
+                      {selectedProject.image_urls.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentImageIndex(idx)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            idx === currentImageIndex
+                              ? "bg-brand-amber-500 scale-125"
+                              : "bg-white/60 hover:bg-white"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+
                 <button
-                  onClick={() => setSelectedProject(null)}
-                  className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center transition-colors shadow-md border border-white/10"
+                  onClick={() => selectProject(null)}
+                  className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center transition-colors shadow-md border border-white/10 z-30"
                   aria-label="Close modal"
                 >
                   &times;
@@ -248,7 +325,7 @@ export default function PortfolioSection({
                   </div>
                   <div className="flex items-center gap-1">
                     <Ruler className="w-4 h-4 text-zinc-400" />
-                    <span>Luas {selectedProject.area}</span>
+                    <span>Luas {formatArea(selectedProject.area)}</span>
                   </div>
                 </div>
 
@@ -256,7 +333,7 @@ export default function PortfolioSection({
                   <h3 className="font-display font-extrabold text-2xl text-zinc-900 dark:text-white">
                     {selectedProject.title}
                   </h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
+                  <p className="text-sm text-zinc-650 dark:text-zinc-300 leading-relaxed font-normal">
                     {selectedProject.description}
                   </p>
                 </div>
@@ -271,6 +348,9 @@ export default function PortfolioSection({
                     <ul className="space-y-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-semibold">
                       <li>Klien: <span className="text-zinc-700 dark:text-zinc-300">{selectedProject.client}</span></li>
                       <li>Status Proyek: <span className="text-zinc-700 dark:text-zinc-300">{selectedProject.status}</span></li>
+                      {selectedProject.team_members && selectedProject.team_members.length > 0 && (
+                        <li>Pelaksana: <span className="text-zinc-700 dark:text-zinc-300">{selectedProject.team_members.join(", ")}</span></li>
+                      )}
                     </ul>
                   </div>
                   <div>

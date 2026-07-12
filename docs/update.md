@@ -27,3 +27,12 @@
     - [x] make a corn job to keep the server alive. 
     - [x] make a corn job to keep the supabase alive.
     - [x] fix the invoice email logic on the dashboard.
+
+## Update 1.4 New Feature and UI/UX Improvements and bug fixes
+    - [ ] make a review section on the home page. that will show latest review from client. make it dynamic. use the review data from the dashboard.
+    - [ ] make a new feature : task management for studio staff. studio manager can assign task to staff. staff can view their task and update the status. manager can view all task and update the status. and also can generate reports.
+    - [ ] make a new feature : timeline management for studio staff. studio manager can assign task to staff. staff can view their task and update the status. manager can view all task and update the status. and also can generate reports. 
+    - [ ] fix bugs : on the portfolio section, in the wide (luas) doesn't have m^2 text. 
+    - [ ] fix bugs : on the portfolio section, the name of the "pelaksana" doesn't show up.
+    - [ ] make slideshow for the portfolio.
+    - [ ] fix bugs : images on the portfolio is sometimes not showing up. 

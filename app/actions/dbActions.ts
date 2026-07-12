@@ -325,4 +325,90 @@ export async function sendInvoiceReminderAction(id: string) {
   return { success: true, count: newRemindersCount, status: newStatus };
 }
 
+// Review Management Actions
+export async function publishReview(id: string, isPublished: boolean) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("reviews")
+    .update({ is_published: isPublished })
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function deleteReview(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("reviews")
+    .delete()
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+// Staff Management Actions
+export async function saveStaffMember(staff: any) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("staff_members")
+    .upsert(staff);
+
+  if (error) return { error: error.message };
+  revalidatePath("/admin/tasks", "page");
+  return { success: true };
+}
+
+export async function deleteStaffMember(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("staff_members")
+    .delete()
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/admin/tasks", "page");
+  return { success: true };
+}
+
+// Task Management Actions
+export async function saveTask(task: any) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("tasks")
+    .upsert(task);
+
+  if (error) return { error: error.message };
+  revalidatePath("/admin/tasks", "page");
+  return { success: true };
+}
+
+export async function deleteTask(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("tasks")
+    .delete()
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/admin/tasks", "page");
+  return { success: true };
+}
+
+export async function updateTaskStatus(id: string, status: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("tasks")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/admin/tasks", "page");
+  return { success: true };
+}
+
+
 
