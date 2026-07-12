@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "../../lib/supabase/server";
+import { createClient, createAdminClient } from "../../lib/supabase/server";
 import { seedDatabase } from "../../lib/supabase/seed";
 import { revalidatePath } from "next/cache";
 
@@ -364,11 +364,33 @@ export async function saveReview(review: any) {
 // Staff Management Actions
 export async function saveStaffMember(staff: any) {
   const supabase = await createClient();
+  
+  // Check if we are inserting a new staff member (no ID) to invite them
+  const isNew = !staff.id;
+  
   const { error } = await supabase
     .from("staff_members")
     .upsert(staff);
 
   if (error) return { error: error.message };
+
+  // Trigger Supabase Auth invitation if this is a new staff member and service key is present
+  if (isNew) {
+    try {
+      const adminClient = createAdminClient();
+      if (adminClient) {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+        await adminClient.auth.admin.inviteUserByEmail(
+          staff.email,
+          { redirectTo: `${siteUrl}/auth/callback?next=/admin/reset-password` }
+        );
+      }
+    } catch (err) {
+      console.error("Gagal mengirim undangan email otomatis:", err);
+      // We don't fail the database insert if email invitation fails
+    }
+  }
+
   revalidatePath("/admin/tasks", "page");
   return { success: true };
 }

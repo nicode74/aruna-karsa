@@ -26,3 +26,20 @@ export async function createClient() {
     }
   );
 }
+
+export function createAdminClient() {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) return null;
+  
+  const { createClient: createSupabaseClient } = require("@supabase/supabase-js");
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+}

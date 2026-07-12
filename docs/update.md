@@ -36,3 +36,6 @@
     - [ ] fix bugs : on the portfolio section, the name of the "pelaksana" doesn't show up.
     - [ ] make slideshow for the portfolio.
     - [ ] fix bugs : images on the portfolio is sometimes not showing up. 
+
+## Update 1.5 invitation and login auth
+    - [ ] since we use supabase for database and auth. i want to invite staff to join the website admin page via supabase auth --> invite a new user. so we need to make a sign up page, login page, and forgot password page. And also we need to make a role management for staff and manager. and then make a system to invite staff to join the website admin page via supabase auth. 

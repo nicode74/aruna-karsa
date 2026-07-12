@@ -1,21 +1,12 @@
 "use client";
 
-import React, { useActionState, use } from "react";
+import React, { useActionState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { login } from "../../actions/authActions";
-import { KeyRound, Mail, ArrowLeft, Loader2 } from "lucide-react";
+import { resetPassword } from "../../actions/authActions";
+import { KeyRound, Loader2 } from "lucide-react";
 
-export default function AdminLoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string; message?: string }>;
-}) {
-  const resolvedParams = use(searchParams);
-  const paramError = resolvedParams?.error;
-  const paramMessage = resolvedParams?.message;
-
-  const [state, formAction, isPending] = useActionState(login, null);
+export default function AdminResetPasswordPage() {
+  const [state, formAction, isPending] = useActionState(resetPassword, null);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-6 py-12 transition-colors duration-300 relative overflow-hidden">
@@ -24,16 +15,7 @@ export default function AdminLoginPage({
       <div className="absolute bottom-[-20%] right-[-20%] w-[60%] aspect-square rounded-full bg-brand-amber-600/10 dark:bg-brand-amber-500/5 blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-md space-y-8 relative z-10">
-        {/* Back Link */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-brand-amber-600 dark:hover:text-brand-amber-500 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Kembali ke Situs Utama
-        </Link>
-
-        {/* Login Card */}
+        {/* Reset Password Card */}
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 shadow-xl space-y-6">
           <div className="text-center space-y-2">
             <div className="relative h-12 w-48 mx-auto mb-4">
@@ -46,26 +28,14 @@ export default function AdminLoginPage({
               />
             </div>
             <h1 className="font-display font-extrabold text-2xl text-zinc-900 dark:text-white">
-              Dashboard Admin
+              Atur Ulang Kata Sandi
             </h1>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Masuk untuk mengelola konten website
+              Masukkan kata sandi baru untuk akun admin/staf Anda
             </p>
           </div>
 
           <form action={formAction} className="space-y-4">
-            {paramError && (
-              <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/30 text-sm text-red-600 dark:text-red-400 font-semibold text-center animate-fadeIn">
-                {paramError}
-              </div>
-            )}
-
-            {paramMessage && (
-              <div className="p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/30 text-sm text-green-600 dark:text-green-400 font-semibold text-center animate-fadeIn">
-                {paramMessage}
-              </div>
-            )}
-
             {state?.error && (
               <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/30 text-sm text-red-600 dark:text-red-400 font-semibold text-center animate-fadeIn">
                 {state.error}
@@ -74,42 +44,11 @@ export default function AdminLoginPage({
 
             <div className="space-y-1">
               <label
-                htmlFor="email"
+                htmlFor="password"
                 className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
               >
-                Email Admin
+                Kata Sandi Baru
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="admin@arunakarsa.co.id"
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500 dark:focus:border-brand-amber-500 focus:ring-1 focus:ring-brand-amber-500/20 transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex justify-between items-center">
-                <label
-                  htmlFor="password"
-                  className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
-                >
-                  Kata Sandi
-                </label>
-                <Link
-                  href="/admin/forgot-password"
-                  className="text-xs font-bold text-brand-amber-500 hover:text-brand-amber-600 transition-colors"
-                >
-                  Lupa kata sandi?
-                </Link>
-              </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400">
                   <KeyRound className="w-4 h-4" />
@@ -118,9 +57,30 @@ export default function AdminLoginPage({
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
                   required
-                  placeholder="••••••••"
+                  placeholder="Buat kata sandi baru"
+                  className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500 dark:focus:border-brand-amber-500 focus:ring-1 focus:ring-brand-amber-500/20 transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label
+                htmlFor="confirmPassword"
+                className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+              >
+                Konfirmasi Kata Sandi
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-400">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  required
+                  placeholder="Ketik ulang kata sandi baru"
                   className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-brand-amber-500 dark:focus:border-brand-amber-500 focus:ring-1 focus:ring-brand-amber-500/20 transition-all"
                 />
               </div>
@@ -134,25 +94,13 @@ export default function AdminLoginPage({
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Memproses...
+                  Menyimpan...
                 </>
               ) : (
-                "Masuk Ke Dashboard"
+                "Simpan Kata Sandi"
               )}
             </button>
           </form>
-
-          <div className="text-center pt-4 border-t border-zinc-100 dark:border-zinc-800/60">
-            <p className="text-xs text-zinc-550 dark:text-zinc-400">
-              Belum memiliki akun staf?{" "}
-              <Link
-                href="/admin/signup"
-                className="font-bold text-zinc-900 dark:text-white hover:text-brand-amber-500 dark:hover:text-brand-amber-500 transition-colors"
-              >
-                Daftar di sini
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>
