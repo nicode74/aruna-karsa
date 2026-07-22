@@ -210,10 +210,14 @@ Mohon info jadwal konsultasi gratis & detail tahap penawaran teknisnya. Terima k
                           <span className="font-bold text-xs">{pkg.name}</span>
                           {isSelected && <Check className="w-3.5 h-3.5 text-brand-amber-500 shrink-0" />}
                         </div>
-                        <p className="font-display font-extrabold text-sm text-zinc-900 dark:text-white mt-1">
+                        <div className="text-[9px] font-bold uppercase tracking-wider text-brand-amber-600 dark:text-brand-amber-400 mt-1">
+                          Start From
+                        </div>
+                        <p className="font-display font-extrabold text-sm text-zinc-900 dark:text-white">
                           {priceFormatted}
                         </p>
                       </div>
+
                       <span className="text-[9px] text-zinc-400 dark:text-zinc-500 font-mono mt-1">/ m²</span>
                     </button>
                   );
@@ -387,10 +391,14 @@ Mohon info jadwal konsultasi gratis & detail tahap penawaran teknisnya. Terima k
 
               {/* Total Price Range Display */}
               <div className="space-y-1.5">
+                <span className="text-[11px] font-extrabold uppercase tracking-widest text-brand-amber-400 block">
+                  Start From
+                </span>
                 <div className="font-display font-black text-3xl sm:text-4xl text-gradient">
                   {formatRupiah(minCost)} - {formatRupiah(maxCost)}
                 </div>
                 <p className="text-xs text-zinc-400 font-medium leading-relaxed">
+
                   {projectType === "design"
                     ? `Perkiraan biaya pembuatan berkas desain lengkap untuk bangunan ${area} m² (termasuk visualisasi & gambar kerja).`
                     : `Estimasi total ini meliputi perizinan dasar, upah tukang, material pembangunan, dan pengawasan proyek (${area} m²).`}

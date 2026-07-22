@@ -90,6 +90,9 @@ export default function PriceListSection({
                     </div>
 
                     <div className="pb-6 border-b border-zinc-200/40 dark:border-zinc-800">
+                      <span className="text-[11px] font-extrabold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-400 block mb-1">
+                        Start From
+                      </span>
                       <div className="flex items-baseline gap-1">
                         <span className="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-brand-amber-500">
                           {formattedPrice}
@@ -99,6 +102,7 @@ export default function PriceListSection({
                         </span>
                       </div>
                     </div>
+
 
                     {/* Features List */}
                     <div className="space-y-3">
@@ -211,7 +215,9 @@ export default function PriceListSection({
               </div>
 
               <div>
-                <span className="text-xs text-zinc-400 font-semibold uppercase tracking-wider">Biaya Mulai From</span>
+                <span className="text-[11px] font-extrabold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-400 block mb-0.5">
+                  Start From
+                </span>
                 <p className="font-display font-extrabold text-3xl text-brand-amber-600 dark:text-brand-amber-500">
                   {formatRupiah(pbg.price)}
                 </p>
@@ -259,7 +265,9 @@ export default function PriceListSection({
               </div>
 
               <div>
-                <span className="text-xs text-zinc-400 font-semibold uppercase tracking-wider">Tarif Hitung</span>
+                <span className="text-[11px] font-extrabold uppercase tracking-widest text-brand-amber-600 dark:text-brand-amber-400 block mb-0.5">
+                  Start From
+                </span>
                 <div className="flex items-baseline gap-1">
                   <span className="font-display font-extrabold text-3xl text-brand-amber-600 dark:text-brand-amber-500">
                     {formatRupiah(structure.price_per_m2)}
@@ -267,6 +275,7 @@ export default function PriceListSection({
                   <span className="text-xs text-zinc-500 font-medium">/ m²</span>
                 </div>
               </div>
+
 
               <div className="p-3.5 rounded-2xl bg-brand-amber-500/5 border border-brand-amber-500/20 text-xs text-zinc-600 dark:text-zinc-300 space-y-1">
                 <p className="font-bold text-brand-amber-600 dark:text-brand-amber-400">Catatan Penting:</p>
