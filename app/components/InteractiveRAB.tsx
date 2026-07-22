@@ -3,18 +3,27 @@
 import React, { useState } from "react";
 import { Info, Calculator, MessageSquare, ChevronRight } from "lucide-react";
 
-export default function InteractiveRAB() {
+interface InteractiveRABProps {
+  pricelist?: any;
+}
+
+export default function InteractiveRAB({ pricelist }: InteractiveRABProps) {
   const [projectType, setProjectType] = useState<"design" | "build">("build");
   const [area, setArea] = useState<number>(100);
   const [complexity, setComplexity] = useState<"minimalist" | "tropical" | "luxury">("tropical");
   const [material, setMaterial] = useState<"standard" | "premium" | "luxury">("premium");
 
+  // Dynamic design package rates from pricelist or defaults (Packet A: 12k, Packet B: 18k, Packet C: 24k)
+  const packetAPrice = pricelist?.packages?.find((p: any) => p.id === "packet_a")?.price_per_m2 || 12000;
+  const packetBPrice = pricelist?.packages?.find((p: any) => p.id === "packet_b")?.price_per_m2 || 18000;
+  const packetCPrice = pricelist?.packages?.find((p: any) => p.id === "packet_c")?.price_per_m2 || 24000;
+
   // Rates in IDR (Rp) per m²
   const baseRates = {
     design: {
-      standard: 50000,
-      premium: 100000,
-      luxury: 180000,
+      standard: packetAPrice,
+      premium: packetBPrice,
+      luxury: packetCPrice,
     },
     build: {
       standard: 3800000,
@@ -22,6 +31,7 @@ export default function InteractiveRAB() {
       luxury: 7500000,
     },
   };
+
 
   const complexityMultipliers = {
     minimalist: 1.0,

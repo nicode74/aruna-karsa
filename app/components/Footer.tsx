@@ -97,10 +97,12 @@ export default function Footer({ config }: { config?: any }) {
               { name: "Beranda", href: "/" },
               { name: "Tentang Kami", href: "/about" },
               { name: "Layanan", href: "/services" },
+              { name: "Daftar Harga", href: "/services#pricelist" },
               { name: "Portofolio", href: "/portfolio" },
               { name: "Blog", href: "/blog" },
               { name: "Kontak", href: "/contact" },
             ].map((link) => (
+
               <li key={link.href}>
                 <Link
                   href={link.href}

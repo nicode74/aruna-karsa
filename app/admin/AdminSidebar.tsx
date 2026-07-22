@@ -22,6 +22,7 @@ import {
   Wrench,
   Star,
   ListTodo,
+  Tag,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -54,6 +55,7 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
   const menuItems = [
     { name: "Pengaturan Utama", href: "/admin", icon: LayoutDashboard },
     { name: "Halaman & Seksi", href: "/admin/pages", icon: Compass },
+    { name: "Daftar Harga", href: "/admin/pricelist", icon: Tag },
     { name: "Proyek Aktif", href: "/admin/active-projects", icon: Wrench },
     { name: "Invoice Tools", href: "/admin/invoices", icon: FileSpreadsheet },
     { name: "Layanan", href: "/admin/services", icon: Briefcase },
@@ -63,6 +65,7 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
     { name: "Kelola Ulasan", href: "/admin/reviews", icon: Star },
     { name: "Tugas & Timeline", href: "/admin/tasks", icon: ListTodo },
   ];
+
 
   // Derive initials from email for the avatar
   const initials = userEmail

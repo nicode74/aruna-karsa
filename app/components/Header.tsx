@@ -50,10 +50,12 @@ export default function Header({ config }: { config?: any }) {
     { name: "Beranda", href: "/" },
     { name: "Tentang Kami", href: "/about" },
     { name: "Layanan", href: "/services" },
+    { name: "Daftar Harga", href: "/services#pricelist" },
     { name: "Portofolio", href: "/portfolio" },
     { name: "Blog", href: "/blog" },
     { name: "Kontak", href: "/contact" },
   ];
+
 
   return (
     <header

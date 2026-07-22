@@ -37,14 +37,19 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const isLoginPage = request.nextUrl.pathname === "/admin/login";
+    const isSignupPage = request.nextUrl.pathname === "/admin/signup";
+    const isForgotPasswordPage = request.nextUrl.pathname === "/admin/forgot-password";
+    const isResetPasswordPage = request.nextUrl.pathname === "/admin/reset-password";
 
-    if (!user && !isLoginPage) {
+    const isPublicAdminPage = isLoginPage || isSignupPage || isForgotPasswordPage || isResetPasswordPage;
+
+    if (!user && !isPublicAdminPage) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/login";
       return NextResponse.redirect(url);
     }
 
-    if (user && isLoginPage) {
+    if (user && (isLoginPage || isSignupPage || isForgotPasswordPage)) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin";
       return NextResponse.redirect(url);

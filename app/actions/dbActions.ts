@@ -443,5 +443,20 @@ export async function updateTaskStatus(id: string, status: string) {
   return { success: true };
 }
 
+// Pricelist Management Actions
+export async function savePricelist(pricelistData: any) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("site_config")
+    .upsert({ id: 1, pricelist: pricelistData, updated_at: new Date().toISOString() });
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  revalidatePath("/services");
+  revalidatePath("/admin/pricelist");
+  return { success: true };
+}
+
+
 
 

@@ -244,3 +244,80 @@ export async function getTasks() {
 }
 
 
+export const DEFAULT_PRICELIST = {
+  packages: [
+    {
+      id: "packet_a",
+      name: "Packet A",
+      price_per_m2: 12000,
+      features: [
+        "Gambar denah layout bangunan",
+        "Gambar Tampak bangunan (tampak depan, belakang, samping kanan & kiri)",
+        "Gambar 3D",
+        "RAB"
+      ]
+    },
+    {
+      id: "packet_b",
+      name: "Packet B",
+      price_per_m2: 18000,
+      features: [
+        "Gambar Denah layout bangunan",
+        "Gambar kerja (DED)",
+        "Perspektif 3D",
+        "RAB"
+      ]
+    },
+    {
+      id: "packet_c",
+      name: "Packet C",
+      price_per_m2: 24000,
+      features: [
+        "Gambar Denah layout bangunan (2 lantai)",
+        "Gambar kerja (DED)",
+        "Gambar 3D",
+        "RAB"
+      ]
+    }
+  ],
+  rab_standalone: {
+    with_analysis: 900000,
+    without_analysis: 350000
+  },
+  pbg_imb: {
+    price: 3500000,
+    description: "Meliputi NIB via OSS (KKPR/KRK)",
+    regions: ["Kota Yogyakarta", "Bantul", "Gunungkidul", "Sleman", "Kulon Progo"]
+  },
+  structure_calc: {
+    price_per_m2: 10000,
+    note: "gambar bangunan sudah ada"
+  }
+};
+
+export async function getPricelist() {
+  const supabase = createPublicClient();
+  if (!supabase) return DEFAULT_PRICELIST;
+
+  try {
+    const { data, error } = await supabase
+      .from("site_config")
+      .select("pricelist")
+      .eq("id", 1)
+      .single();
+
+    if (error || !data?.pricelist) {
+      return DEFAULT_PRICELIST;
+    }
+    return {
+      ...DEFAULT_PRICELIST,
+      ...data.pricelist
+    };
+  } catch (err) {
+    console.error("Exception fetching pricelist:", err);
+    return DEFAULT_PRICELIST;
+  }
+}
+
+
+
