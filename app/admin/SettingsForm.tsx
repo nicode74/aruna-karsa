@@ -270,7 +270,7 @@ export default function SettingsForm({ initialConfig, stats }: SettingsFormProps
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-6 max-w-5xl">
+    <form onSubmit={handleSave} className="space-y-6 max-w-7xl mx-auto pb-12">
 
       {/* ── Welcome Banner ─────────────────────────────────── */}
       <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 dark:from-zinc-800 dark:via-zinc-900 dark:to-zinc-950 rounded-3xl p-8 text-white shadow-2xl">

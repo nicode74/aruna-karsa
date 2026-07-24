@@ -38,4 +38,10 @@
     - [ ] fix bugs : images on the portfolio is sometimes not showing up. 
 
 ## Update 1.5 invitation and login auth
-    - [ ] since we use supabase for database and auth. i want to invite staff to join the website admin page via supabase auth --> invite a new user. so we need to make a sign up page, login page, and forgot password page. And also we need to make a role management for staff and manager. and then make a system to invite staff to join the website admin page via supabase auth. 
+    - [ ] since we use supabase for database and auth. i want to invite staff to join the website admin page via supabase auth --> invite a new user. so we need to make a sign up page, login page, and forgot password page. And also we need to make a role management for staff and manager. and then make a system to invite staff to join the website admin page via supabase auth.
+
+## Update 1.5.1 Minor UI UX fix and updating staff role on task management section.
+    - [x] fix the admin dashboard UI & UX. make the spacing and padding more consistent. make the text more readable and concise. 
+    - [x] fix gantt timeline UI UX. make it more sleek and modern without sacrificing functionality. and make it more interactive. also make it more concise.
+    - [x] assign ceo@arunakarsa.my.id and it@arunakarsa.my.id as the ceo so can make, edit, delete, assign tasks to staff and managers.
+    - [x] make it possible to update the status of the task on the task management section.
